@@ -2,6 +2,7 @@
 
 import re
 import urllib2
+import json
 from BeautifulSoup import BeautifulSoup
 
 
@@ -44,7 +45,7 @@ def scrape_getthenumbers(outFile):
                     current_row.append(re.sub(u'&nbsp;',' ', rr))
         rows.append(current_row)
 
-    out_file = open(outFile+'.csv', 'w')
+    out_file = open(outFile, 'w')
     print >> out_file, head_line
 
     #hard coding the row at which the movie table actually begins
@@ -82,41 +83,43 @@ def sqlready_csv(inFile,outFile):
             running_counter += 1
             splitMap[i] = 'Unk'+str(running_counter).zfill(5)
 
-
+        # skip movie is budget information is unavailable
         if splitMap[3] == ' ' or splitMap[3] == 'Unknown':
             doPrint = False
+
+        # skip movie if box office intake is unavailable
         for i in [4,5]:
             if splitMap[i] == ' ' or splitMap[i] == 'Unknown':
                 doPrint = False
 
-    if doPrint: 
-        lineOut = ','.join(splitMap)
-        print >> fileClean, lineOut
-        print lineOut
-fileClean.close()
+        if doPrint: 
+            lineOut = ','.join(splitMap)
+            print >> fileClean, lineOut
+            #print lineOut
+    
+    fileClean.close()
 
 
 class ImdbAPIFunction:
 
-    BASE_URL = 'http://www.imdbapi.com'
+    BASE_URL = 'http://www.omdbapi.com'
 
     def __init__(self, title):
         self.title = title
         self._process()
         
     def _process(self):
-        movie = re.sub(' ','%20',self.title.lower())
+        movie = re.sub(' ','+',self.title)
 
         url = "%s/?i=&t=%s" % (self.BASE_URL, movie)
-        print url
         content = urllib2.urlopen(url).read()
         content = json.loads(content)
         self.data = content
 
 
-movie = 'The Abyss'
-x = ImdbFunction(movie)
-print x.data
+# movie = 'The Abyss'
+# x = ImdbFunction(movie)
+# print x.data
 
 
 
