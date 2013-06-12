@@ -104,17 +104,15 @@ class ImdbAPIFunction:
 
     BASE_URL = 'http://www.omdbapi.com'
 
-    def __init__(self, title,release):
+    def __init__(self, title,year):
         self.title = title
-        self.release = release
+        self.year = year
         self._process()
         
     def _process(self):
         movie = re.sub(' ','+',self.title)
-        yySplit = map(self.year.split('/'))
-        yySplit[-1]
 
-        url = "%s/?i=&t=%s&y=%s" % (self.BASE_URL, movie,year)
+        url = "%s/?i=&t=%s&y=%s" % (self.BASE_URL, movie,self.year)
         content = urllib2.urlopen(url).read()
         content = json.loads(content)
         self.data = content
