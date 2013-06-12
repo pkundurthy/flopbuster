@@ -1,6 +1,7 @@
 
 
 import MySQLdb
+import numpy as num
 
 def_dBhost = 'localhost'
 def_dBuser = 'root'
@@ -30,6 +31,35 @@ def getTitles_BoxOffice():
     results = cursor.fetchall()
 
     return [x[0] for x in results]
+
+
+def getGrosses_BoxOffice(notNulls=['budget','usgross','worldgross']):
+    """
+        This function will return the budget, US gross, Worldwide Gross and
+        Movie title from the Box Office database. The notNulls keyword sets 
+        whether null information from a given column is used to filter out
+        results. e.g. if notNulls=['budget','worldgross'], the resulting table 
+        will only include those movies where 'budget' and 'worldgross' are not
+        NULLs.
+    """
+    
+
+    cursor = dbConnect()
+    foo = 'select budget,usgross,worldgross,title from boxoffice'
+    foo += ' where( '
+    foo += ' and '.join([x+' is not NULL' for x in notNulls])
+    foo += ');'
+
+    cursor.execute(foo)
+    results = cursor.fetchall()
+
+    budget = num.array([x[0] for x in results])
+    usgross = num.array([x[1] for x in results])
+    worldgross = num.array([x[2] for x in results])
+    title = [x[3] for x in results]
+
+    return budget,usgross,worldgross,title
+
 
 # def getInstance_BoxOfficeMovie(MovieName, countEntry=False):
 #     """

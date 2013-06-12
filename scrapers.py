@@ -100,11 +100,17 @@ def sqlready_csv(inFile,outFile):
     fileClean.close()
 
 
+GoodKeyNames = [u'Plot', u'Rated', u'Title', u'Poster',\
+                u'Writer', u'Response', u'Director', u'Released',\
+                u'Actors', u'Year', u'Genre', u'Runtime', u'Type',\
+                u'imdbRating', u'imdbVotes', u'imdbID']
+BadKeyNames = [u'Response',u'Error']
+
 class ImdbAPIFunction:
 
     BASE_URL = 'http://www.omdbapi.com'
 
-    def __init__(self, title,year):
+    def __init__(self, title,year=None):
         self.title = title
         self.year = year
         self._process()
@@ -112,9 +118,22 @@ class ImdbAPIFunction:
     def _process(self):
         movie = re.sub(' ','+',self.title)
 
-        url = "%s/?i=&t=%s&y=%s" % (self.BASE_URL, movie,self.year)
+        if self.year != None:
+           url = "%s/?i=&t=%s&y=%s" % (self.BASE_URL, movie,self.year)
+        else:
+            url = "%s/?i=&t=%s" % (self.BASE_URL, movie)
+
         content = urllib2.urlopen(url).read()
         content = json.loads(content)
         self.data = content
+
+    # def cleandata(self):
+
+    #     newdata = {}
+    #     for keys in [u'Writer',:
+    #         new_key = 
+
+
+
 
 
