@@ -3,8 +3,8 @@
 import re
 import urllib2
 import json
+import csv
 from BeautifulSoup import BeautifulSoup
-
 
 def scrape_getthenumbers(outFile):
     """ a function that simply does a first order scraping 
@@ -52,7 +52,7 @@ def scrape_getthenumbers(outFile):
     start_row = 67
     lenght_array = []
     for i in range(len(rows)):
-        #if i == start_row: print rows[i]
+        # start creation of csv data
         if i >= start_row:
             lenght_array.append(len(rows[i]))
             print >> out_file, ','.join(rows[i])
@@ -115,11 +115,5 @@ class ImdbAPIFunction:
         content = urllib2.urlopen(url).read()
         content = json.loads(content)
         self.data = content
-
-
-# movie = 'The Abyss'
-# x = ImdbFunction(movie)
-# print x.data
-
 
 
