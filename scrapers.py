@@ -5,6 +5,7 @@ import urllib2
 import json
 import csv
 from BeautifulSoup import BeautifulSoup
+import unicodedata
 
 def scrape_getthenumbers(outFile):
     """ a function that simply does a first order scraping 
@@ -106,17 +107,25 @@ GoodKeyNames = [u'Plot', u'Rated', u'Title', u'Poster',\
                 u'imdbRating', u'imdbVotes', u'imdbID']
 BadKeyNames = [u'Response',u'Error']
 
+
+
 class ImdbAPIFunction:
 
     BASE_URL = 'http://www.omdbapi.com'
 
     def __init__(self, title,year=None):
+
         self.title = title
         self.year = year
         self._process()
+        self._cleandata()
         
     def _process(self):
         movie = re.sub(' ','+',self.title)
+        try:
+            movie = unicodedata.normalize('NFKD', movie).encode('ascii','ignore')
+        except:
+            pass
 
         if self.year != None:
            url = "%s/?i=&t=%s&y=%s" % (self.BASE_URL, movie,self.year)
@@ -127,12 +136,26 @@ class ImdbAPIFunction:
         content = json.loads(content)
         self.data = content
 
-    # def cleandata(self):
+    def _cleandata(self):
 
-    #     newdata = {}
-    #     for keys in [u'Writer',:
-    #         new_key = 
+        newdata = {}
+        NeedList = [u'Writer',u'Director',u'Actors',u'Genre']
+        HaveList = self.data.keys()
+        useList = list(set.intersection(set(NeedList),set(HaveList)))
+        self.keylist = useList
+        for key in useList:
+            new_key = unicodedata.normalize('NFKD', key).encode('ascii','ignore')
+            new_dataform = unicodedata.normalize('NFKD', self.data[key]).encode('ascii','ignore')
+            dSplit00 = map(str, new_dataform.split(', '))
+            # dSplit01 = [unicodedata.normalize('NFKD',x).encode('ascii','ignore') for x in dSplit00]
+            newdata[new_key] = dSplit00
 
+        # for key in [u'Year',u'imdbID']:
+        #     new_key = unicodedata.normalize('NFKD', key).encode('ascii','ignore')
+        #     new_value = unicodedata.normalize('NFKD', self.data[key].strip()).encode('ascii','ignore')
+        #     newdata[new_key] = new_value
+
+        self.out = newdata
 
 
 
