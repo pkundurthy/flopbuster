@@ -9,9 +9,67 @@
 
     <!-- Le styles -->
     <link href="/static/css/bootstrap.css" rel="stylesheet">
-    <style>
+    <!--     <style>
       body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        padding-top: 60px;  60px to make the container go all the way to the bottom of the topbar 
+      }
+    </style> -->
+    <style type="text/css">
+      body {
+        padding-top: 20px;
+        padding-bottom: 40px;
+        background-color: #F0F0F0;
+      }
+
+      /* Custom container */
+      .container-narrow {
+        margin: 0 auto;
+        max-width: 700px;
+      }
+      .container-narrow > hr {
+        margin: 30px 0;
+        color: Red;
+      }
+
+      .new_active{
+        outline:0;
+        color: Red;
+      }
+
+      .new_muted{color:Red}
+
+      /* Main marketing message and sign up button */
+      .jumbotron {
+        margin: 60px 0;
+        text-align: center;
+      }
+      .jumbotron h1 {
+        font-size: 72px;
+        line-height: 1;
+      }
+     .jumbotron h2 {
+        font-size: 36px;
+        line-height: 1;
+      }
+      .jumbotron .btn {
+        font-size: 21px;
+        padding: 14px 24px;
+      }
+
+      #exp1 {
+        text-align: left;
+        margin-left: 60px;
+        margin-right: 20px;
+        /*padding-left: 30px*/
+      }
+
+
+      /* Supporting marketing content */
+      .marketing {
+        margin: 60px 0;
+      }
+      .marketing p + h4 {
+        margin-top: 28px;
       }
     </style>
     <link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
@@ -27,9 +85,7 @@
       <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/static/ico/apple-touch-icon-72-precomposed.png">
                     <link rel="apple-touch-icon-precomposed" href="/static/ico/apple-touch-icon-57-precomposed.png">
                                    <link rel="shortcut icon" href="/static/ico/favicon.png">
-  </head>
-
-  <body>
+  </head>  <body>
 
     <div class="navbar navbar-inverse navbar-fixed-top">
           <div class="navbar-inner">
@@ -43,7 +99,7 @@
               <div class="nav-collapse collapse">
                 <ul class="nav">
                   <li class="active"><a href="#">Home</a></li>
-                  <li><a href="#">App</a></li>
+                  <li><a href="/app">App</a></li>
                   <li><a href="/about">About/Contact</a></li>
                 </ul>
               </div><!--/.nav-collapse -->
@@ -51,13 +107,18 @@
           </div>
         </div>
 
-    <div class="container">
+    <div class="container-narrow">
 
-      <h1> Find out who makes movie magic. </h1>
-      <p><br></p>
-      
+      <!-- The main text of the page -->
+      <div class="jumbotron">
+        <h2>Find the people who make Movie Magic</h2>
+        <p class="lead">Powered by data from <a href='http://www.imdb.com'> IMDB</a> and <a href='http://www.the-numbers.com'> the-numbers.com </a></p>
+        <p class="lead">Search for Directors, Actors and Writers. <br> We'll tell you if the movie rocks! or flops :( </p>
+        <a class="btn btn-large btn-inverse" href="/app">Flopbuster!</a>
+      </div>
+
+      <hr>      
     </div> <!-- /container -->
-
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->

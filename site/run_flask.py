@@ -15,6 +15,13 @@ def hello(name=None):
 @app.route("/about")
 def about(name=None):
     return render_template('about.html',name=name)
-    
+
+@app.route("/app")
+def toapp(name=None):
+    return render_template('app.html',name=name)
+
+
+
+
 if __name__ == "__main__":
     app.run()
