@@ -1,5 +1,4 @@
 
-
 import re
 import urllib2
 import json
@@ -108,12 +107,13 @@ GoodKeyNames = [u'Plot', u'Rated', u'Title', u'Poster',\
 BadKeyNames = [u'Response',u'Error']
 
 
-
 class ImdbAPIFunction:
 
     BASE_URL = 'http://www.omdbapi.com'
 
     def __init__(self, title,year=None):
+        """ an instance of this object will scrape JSON like data from
+        omdbapi.com for a given movie """
 
         self.title = title
         self.year = year
@@ -158,5 +158,9 @@ class ImdbAPIFunction:
         self.out = newdata
 
 
+class worldSubtitleScraper:
 
+        BASE_URL = 'http://subtitlesbank.com/subtitles/language/en/'
+
+        
 

@@ -114,15 +114,22 @@
       <div class="jumbotron">
         <h2>Flopbuster!</h2>
 
-      <form class="navbar-search pull-left">
-      <input type="text" class="search-query" placeholder="Search for Movie">
+        <div class='row'>
+            <form action="/app" method="POST">
+            <input type="text" name="text">
+            <input type="submit" value="Search">
+            </form>
+        </div>
+
+<!--       <form class="navbar-search pull-left">
+      <input type="text" class="search-query" placeholder="Search for Movie" value=" " >
       <p> or </p>
       <input type="text" class="search-query" placeholder="Search for Director(s)">
       <p> and </p>
       <input type="text" class="search-query" placeholder="Search for Actor(s)">
       <p> and </p>
       <input type="text" class="search-query" placeholder="Search for Genre">
-    
+ -->    
       </div>
 
       </form>
