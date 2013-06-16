@@ -3,6 +3,8 @@ from flask import Flask, render_template, request
 import os
 import cPickle
 import unicodedata
+import flopbuster
+
 
 #app = Flask(__name__, template_folder=tmpl_dir)
 oFile = open('templates/OutDict.pickle','rb')
@@ -23,7 +25,6 @@ def about(name=None):
 @app.route("/app")
 def toapp(name=None):
     return render_template('app.html',name=name)
-
 
 @app.route('/app', methods=['POST'])
 def myrun_search():
