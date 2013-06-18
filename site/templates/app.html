@@ -31,7 +31,7 @@
         <div class='row'>
             <form action="/app" method="POST">
             <input type="text" name="text">
-            <input type="submit" value="Search">
+            <input type="submit" class="btn-small" class="icon-white icon-play" value="Search">
             </form>
         </div>
 
@@ -50,3 +50,4 @@
 
     </div>
 {% endblock %}
+{% block acks %} <p class="lead"> &nbsp Powered by data from <a href='http://www.imdb.com'> IMDB</a> and <a href='http://www.the-numbers.com'> the-numbers.com </a></p> {% endblock %}

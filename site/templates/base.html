@@ -15,7 +15,6 @@
               body {
                 padding-top: 20px;
                 padding-bottom: 40px;
-                background-color: #F0F0F0;
               }
 
               /* Custom container */
@@ -33,7 +32,7 @@
                 color: Red;
               }
 
-              .new_muted{color:Red}
+              .new_muted{color:White}
 
             /* Main marketing message and sign up button */
               .jumbotron {
@@ -49,8 +48,16 @@
                 line-height: 1;
               }
               .jumbotron .btn {
-                font-size: 21px;
+                font-size: 36px;
+                font-color: #99999;
+                background-color:#e36b23;
                 padding: 14px 24px;
+              }
+              .jumbotron .btn-small {
+                font-size: 16px;
+                font-color: #99999;
+                background-color:#e36b23;
+                padding: 4px 4px;
               }
 
               #exp1 {
@@ -83,7 +90,8 @@
         <div id="content">{% block content %}{% endblock %}</div>
         <div id="footer">
             {% block footer %}
-                &copy; Copyright 2013 by <a href="https://github.com/pkundurthy/flopbuster">Praveen Kundurthy</a>.
+              {% block acks %} {% endblock %}
+              &nbsp &copy; Copyright 2013 by <a href="https://github.com/pkundurthy/flopbuster">Praveen Kundurthy</a>.
             {% endblock %}
         </div>
         <!-- Le javascript

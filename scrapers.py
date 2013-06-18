@@ -158,9 +158,5 @@ class ImdbAPIFunction:
         self.out = newdata
 
 
-class worldSubtitleScraper:
-
-        BASE_URL = 'http://subtitlesbank.com/subtitles/language/en/'
-
-        
+# class wikiPlotScraper:
 

@@ -14,10 +14,10 @@ cursor = db.cursor()
 cursor.execute("DROP TABLE IF EXISTS boxoffice;")
 createStatement = "CREATE TABLE boxoffice"
 createStatement += "(released DATE,title VARCHAR(80),budget BIGINT,"
-createStatement += "usgross BIGINT,worldgross BIGINT,MovieType VARCHAR(25) )"
+createStatement += "usgross BIGINT,worldgross BIGINT, totalgross BIGINT, MovieType VARCHAR(25) )"
 cursor.execute(createStatement)
 
-reader = csv.DictReader(open("OutputPages01.csv", "rb"),delimiter=';')
+reader = csv.DictReader(open("../data_files/OutputPages01.csv", "rb"),delimiter=';')
 
 OutMySql = open('mysql_boxoffice.csv','w')
 for row in reader:
@@ -27,9 +27,20 @@ for row in reader:
     budget = row['Budget']
     usgross = row['US Gross']
     worldgross = row['Worldwide Gross']
-    type = row['Type']
+    typeName = row['Type']
+
+    totalgross = 0
+    for el in [usgross,worldgross]:
+        if el == '\N':
+            el = 0
+        else:
+            el = int(el)
+        totalgross += el
+
+    totalgross = str(totalgross) 
     print reld,title,budget,usgross,worldgross,type
-    line = reld+'|'+title+'|'+budget+'|'+usgross+'|'+worldgross+'|'+type
+    line = reld+'|'+title+'|'+budget+'|'+\
+           usgross+'|'+worldgross+'|'+totalgross+'|'+typeName
     print >> OutMySql, line
 
 OutMySql.close()

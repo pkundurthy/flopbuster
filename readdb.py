@@ -2,6 +2,8 @@
 
 import MySQLdb
 import numpy as num
+import cPickle
+import unicodedata
 
 def_dBhost = 'localhost'
 def_dBuser = 'root'
@@ -43,7 +45,6 @@ def getGrosses_BoxOffice(notNulls=['budget','usgross','worldgross']):
         NULLs.
     """
     
-
     cursor = dbConnect()
     foo = 'select budget,usgross,worldgross,title from boxoffice'
     foo += ' where( '
@@ -60,15 +61,47 @@ def getGrosses_BoxOffice(notNulls=['budget','usgross','worldgross']):
 
     return budget,usgross,worldgross,title
 
+# app = Flask(__name__, template_folder=tmpl_dir)
+# oFile = open('OutDict.pickle','rb')
+# oFile = open('OutDict.pickle','rb')
+# ResultsDict = cPickle.load(oFile)
 
-# def getInstance_BoxOfficeMovie(MovieName, countEntry=False):
-#     """
-#         find all data on a given movie title from BoxOffice table.
-#         countEntry=True will return the number of rows for a given
-#         match to MovieName string.
-#     """
+def getSucessString(sNumber):
 
-#     foo  = 'select title from boxoffice;' % (MovieName)
-#     cursor.execute(foo)
+    sNumber = long(sNumber)
+    if sNumber == -1:
+        oStr = 'Fail!'
+    elif sNumber == 0:
+        oStr = '(meh) did ok...'
+    elif sNumber == 1:
+        oStr = 'Good!'
+    elif sNumber == 2:
+        oStr = 'Awesome! $$'
+    else:
+        oStr = 'Unknown'
 
-#     print foo
+    return oStr
+
+def grabMovieComparison(movieName):
+
+    # print movieName, ResultsDict
+    mName = unicodedata.normalize('NFKD', movieName).encode('ascii','ignore')
+
+    # ActualSucess = getSucessString(ResultsDict[mName]['Actual'])
+    # PredictedSucess = getSucessString(ResultsDict[mName]['Predicted'])
+    ActualSucess = getSucessString(ResultsDict[mName]['Actual'])
+    PredictedSucess = getSucessString(ResultsDict[mName]['Predicted'])
+    return [mName,PredictedSucess,ActualSucess]
+
+
+# # def getInstance_BoxOfficeMovie(MovieName, countEntry=False):
+# #     """
+# #         find all data on a given movie title from BoxOffice table.
+# #         countEntry=True will return the number of rows for a given
+# #         match to MovieName string.
+# #     """
+
+# #     foo  = 'select title from boxoffice;' % (MovieName)
+# #     cursor.execute(foo)
+
+# #     print foo

@@ -1,11 +1,9 @@
 
-
-
 def date_to_mysqlDate(inDateString):
     """
         changes dates from the scraped data
-        MM/DD/YYYY to 
-        MySQL date format-ready strings
+        in MM/DD/YYYY to 
+        MySQL-ready date format strings
         YYYY-MM-DD
     """
 

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %} Flopbuster: An Insight Data Science Project {% endblock %}
+{%block topbar%}
+<div class="navbar navbar-inverse navbar-fixed-top">
+          <div class="navbar-inner">
+            <div class="container">
+              <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="brand" href="#">Flopbuster</a>
+              <div class="nav-collapse collapse">
+                <ul class="nav">
+                  <li><a href="/">Home</a></li>
+                  <li class="active"><a href="/app">App</a></li>
+                  <li><a href="/about">About/Contact</a></li>
+                </ul>
+              </div><!--/.nav-collapse -->
+            </div>
+          </div>
+        </div>
+{%endblock%}
+{% block content %}
+<div class="container-narrow">
+
+  <div class="jumbotron">
+        <h2>Boxoffice Prospects:</h2>
+        <h2> {{post_links[0]}} </h2> 
+        <p> <b> Actual Outcome: </b> {{post_links[1]}} </p> 
+        <p> <b> Predicted Outcome: </b> {{post_links[2]}} </p> 
+        <p> Fail! | (meh) Ok | Good |  Awesome | </p>
+ </div>
+{% endblock %}
+{% block acks %} &nbsp <p class="lead"> &nbsp Powered by data from <a href='http://www.imdb.com'> IMDB</a> and <a href='http://www.the-numbers.com'> the-numbers.com </a></p> {% endblock %}
