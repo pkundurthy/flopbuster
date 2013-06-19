@@ -18,8 +18,8 @@ def getYear(inDateString):
     """
 
     if '/' in inDateString:
-        newString = date_to_mysqlDate(inDateString)
+        inDateString = date_to_mysqlDate(inDateString)
 
-    yySplit = map(str, newString.split('-'))
+    yySplit = map(str, inDateString.split('-'))
 
     return yySplit[0]

@@ -2,21 +2,29 @@
 import flopbuster
 from matplotlib import pylab as plt
 import numpy as num
+import datetime
 
 plist = ['James Cameron','Steven Spielberg','J.J. Abrams','George Lucas']
-
 clist = ['b','r','g','c','k','y']
 
+
+d,suc = flopbuster.discovery.getInfluenceHistory(plist[1])
+
+# for person in plist:
+#     d,suc = flopbuster.discovery.getInfluenceHistory(person)
+#     plt.plot(d,suc)
+#     plt.plot(d,suc,'o',color=clist.pop())
+
+# plt.show()
+
+
+
+print min_date, max_date
+yyRange = num.arange(min_date,max_date,1)
+print yyRange
+
+
 """
-for person in plist:
-    d,suc = flopbuster.discovery.getInfluenceHistory(person)
-    plt.plot(d,suc)
-    plt.plot(d,suc,'o',color=clist.pop())
-
-plt.show()
-"""
-
-
 rel,gross = flopbuster.discovery.getAllGrossFactor()
 print '> 100 ',len(num.where(gross > 100)[0])
 print '10 - 100 ',len(num.where( (gross > 10) & (gross < 100) )[0])
@@ -31,3 +39,4 @@ plt.plot(budget,totalgross,'b.')
 plt.yscale('log')
 plt.xscale('log')
 plt.show()
+"""

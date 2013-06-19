@@ -3,6 +3,7 @@
 import MySQLdb
 import numpy as num
 import cPickle
+import datetime
 import unicodedata
 
 def_dBhost = 'localhost'
@@ -61,11 +62,6 @@ def getGrosses_BoxOffice(notNulls=['budget','usgross','worldgross']):
 
     return budget,usgross,worldgross,title
 
-# app = Flask(__name__, template_folder=tmpl_dir)
-# oFile = open('OutDict.pickle','rb')
-# oFile = open('OutDict.pickle','rb')
-# ResultsDict = cPickle.load(oFile)
-
 def getSucessString(sNumber):
 
     sNumber = long(sNumber)
@@ -92,6 +88,74 @@ def grabMovieComparison(movieName):
     ActualSucess = getSucessString(ResultsDict[mName]['Actual'])
     PredictedSucess = getSucessString(ResultsDict[mName]['Predicted'])
     return [mName,PredictedSucess,ActualSucess]
+
+
+
+def getInfluenceHistory(person):
+    """ get the Influence history of given person """
+
+    cursor = dbConnect()
+    statement1 = 'select title,released,ifnull(totalgross,0),budget'
+    statement1 += ' from boxoffice where boxoffice.title = any '
+    statement1 += '(select `title` from movie_meta '
+    statement1 += 'where(part = "%s")) order by released asc;' % (person)
+
+    cursor.execute(statement1)
+    results = cursor.fetchall()
+    title =[x[0] for x in results]
+    release = [x[1] for x in results]
+    totalGross = num.array([x[2] for x in results],dtype=float)
+    budget = num.array([x[3] for x in results],dtype=float)
+
+    return release,num.round(num.log10(totalGross/(budget))),title
+
+def getPartHistory(person):
+    """ get the list of roles played by a given person """
+
+    cursor = dbConnect()
+    statement1 = 'select title,partType from movie_meta where movie_meta.part = "%s";' % (person)
+
+    cursor.execute(statement1)
+    results = cursor.fetchall()
+    titles = [x[0] for x in results]
+    partType = [x[1] for x in results]
+    partHist = {}
+    for i in range(len(titles)):
+        if partHist.has_key(titles[i]):
+            partHist[titles[i]].append(partType[i])
+        else:
+            partHist[titles[i]] = [partType[i]]
+
+    return partHist
+
+
+def getAllGrossFactor():
+
+    cursor = dbConnect()
+    statement1 = 'select released,ifnull(totalgross,0),budget from boxoffice;'
+
+    cursor.execute(statement1)
+    results = cursor.fetchall()
+    release = [x[0] for x in results]
+    totalGross = num.array([x[1] for x in results])
+    budget = num.array([x[2] for x in results])
+
+    return release,totalGross/budget
+
+def getInOutMoney():
+
+    cursor = dbConnect()
+    statement1 = 'select ifnull(totalgross,0),budget from boxoffice;'
+    cursor.execute(statement1)
+    results = cursor.fetchall()
+    totalGross = num.array([x[0] for x in results])
+    budget = num.array([x[1] for x in results])
+
+    return budget,totalGross
+
+
+
+
 
 
 # # def getInstance_BoxOfficeMovie(MovieName, countEntry=False):
