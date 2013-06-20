@@ -213,7 +213,6 @@ for i in MDictTest.keys():
         except:
             pass
 
-
 train_file = open('TrainFile.pickle',"wb")
 cPickle.dump(TrainingArray, train_file, protocol=2)
 train_file.close()

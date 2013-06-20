@@ -2,6 +2,7 @@
 
 import MySQLdb
 import numpy as num
+num.seterr(divide='ignore')
 import cPickle
 import datetime
 import unicodedata
@@ -12,11 +13,10 @@ def_dBpass = ''
 def_dBname = 'flopbuster'
 def_path_to_socket = '/var/mysql/mysql.sock'
 
-
 def dbConnect(dBhost=def_dBhost,dBuser=def_dBuser,\
               dBpass=def_dBpass,dBname=def_dBname,\
               path_to_socket=def_path_to_socket):
-    """ standard MySQLdb connector to 'flopbuster' database """
+    """ the basic MySQLdb connector to the 'flopbuster' database """
     
     db = MySQLdb.connect(host=dBhost, user=dBuser,\
                          passwd=dBpass,db=dBname,unix_socket=path_to_socket)
@@ -24,9 +24,7 @@ def dbConnect(dBhost=def_dBhost,dBuser=def_dBuser,\
     return cursor
 
 def getTitles_BoxOffice():
-    """
-        get list of all movie titles from boxoffice table
-    """
+    """ get list of all movie titles from boxoffice table """
 
     cursor = dbConnect()
     foo  = 'select title from boxoffice;'
@@ -35,16 +33,14 @@ def getTitles_BoxOffice():
 
     return [x[0] for x in results]
 
-
 def getGrosses_BoxOffice(notNulls=['budget','usgross','worldgross']):
-    """
-        This function will return the budget, US gross, Worldwide Gross and
-        Movie title from the Box Office database. The notNulls keyword sets 
-        whether null information from a given column is used to filter out
-        results. e.g. if notNulls=['budget','worldgross'], the resulting table 
-        will only include those movies where 'budget' and 'worldgross' are not
-        NULLs.
-    """
+    """ A function to return the budget, US gross, Worldwide Gross and
+        Movie title from the Box Office database. 
+
+        notNulls (keyword) sets is used to filter out nulls form the columns
+        presented in the list. For e.g. if notNulls=['budget','worldgross'], 
+        the resulting table will only include those movies where 'budget' and
+        'worldgross' are not NULLs. """
     
     cursor = dbConnect()
     foo = 'select budget,usgross,worldgross,title from boxoffice'
@@ -62,40 +58,21 @@ def getGrosses_BoxOffice(notNulls=['budget','usgross','worldgross']):
 
     return budget,usgross,worldgross,title
 
-def getSucessString(sNumber):
+def getReleaseDateMovie(movieName):
+    """ get the date of release of a movie """
 
-    sNumber = long(sNumber)
-    if sNumber == -1:
-        oStr = 'Fail!'
-    elif sNumber == 0:
-        oStr = '(meh) did ok...'
-    elif sNumber == 1:
-        oStr = 'Good!'
-    elif sNumber == 2:
-        oStr = 'Awesome! $$'
-    else:
-        oStr = 'Unknown'
-
-    return oStr
-
-def grabMovieComparison(movieName):
-
-    # print movieName, ResultsDict
-    mName = unicodedata.normalize('NFKD', movieName).encode('ascii','ignore')
-
-    # ActualSucess = getSucessString(ResultsDict[mName]['Actual'])
-    # PredictedSucess = getSucessString(ResultsDict[mName]['Predicted'])
-    ActualSucess = getSucessString(ResultsDict[mName]['Actual'])
-    PredictedSucess = getSucessString(ResultsDict[mName]['Predicted'])
-    return [mName,PredictedSucess,ActualSucess]
-
-
+    cursor = dbConnect()
+    statement1 = 'select released from boxoffice where title = "%s" ' % (movieName)
+    cursor.execute(statement1)
+    results = cursor.fetchall()
+    release_date = [x[0] for x in results]
+    return release_date[0]
 
 def getInfluenceHistory(person):
     """ get the Influence history of given person """
 
     cursor = dbConnect()
-    statement1 = 'select title,released,ifnull(totalgross,0),budget'
+    statement1 = 'select title,released,ifnull(totalgross,0),ifnull(budget,0)'
     statement1 += ' from boxoffice where boxoffice.title = any '
     statement1 += '(select `title` from movie_meta '
     statement1 += 'where(part = "%s")) order by released asc;' % (person)
@@ -107,13 +84,17 @@ def getInfluenceHistory(person):
     totalGross = num.array([x[2] for x in results],dtype=float)
     budget = num.array([x[3] for x in results],dtype=float)
 
-    return release,num.round(num.log10(totalGross/(budget))),title
+    OutMetric = num.log10(totalGross/budget)
+    indx_zeros = num.where(OutMetric == num.float('-inf'))[0]
+    OutMetric[indx_zeros] = 0e0
 
-def getPartHistory(person):
+    return release,OutMetric,title
+
+def getPartHistory(personName):
     """ get the list of roles played by a given person """
 
     cursor = dbConnect()
-    statement1 = 'select title,partType from movie_meta where movie_meta.part = "%s";' % (person)
+    statement1 = "select title, partType from movie_meta where movie_meta.part = \"%s\";" % (personName)
 
     cursor.execute(statement1)
     results = cursor.fetchall()
@@ -127,7 +108,6 @@ def getPartHistory(person):
             partHist[titles[i]] = [partType[i]]
 
     return partHist
-
 
 def getAllGrossFactor():
 
@@ -152,20 +132,3 @@ def getInOutMoney():
     budget = num.array([x[1] for x in results])
 
     return budget,totalGross
-
-
-
-
-
-
-# # def getInstance_BoxOfficeMovie(MovieName, countEntry=False):
-# #     """
-# #         find all data on a given movie title from BoxOffice table.
-# #         countEntry=True will return the number of rows for a given
-# #         match to MovieName string.
-# #     """
-
-# #     foo  = 'select title from boxoffice;' % (MovieName)
-# #     cursor.execute(foo)
-
-# #     print foo

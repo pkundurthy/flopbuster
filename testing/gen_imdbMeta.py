@@ -9,7 +9,6 @@ import sys
 title_List = flopbuster.readdb.getTitles_BoxOffice()
 print len(title_List), len(set(title_List))
 
-
 # print title_List[2500]
 
 # sys.exit()
