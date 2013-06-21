@@ -3,4 +3,5 @@
 import readdb
 import scrapers
 import misc
-import training
+import discovery
+import predict

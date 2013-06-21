@@ -16,7 +16,7 @@ def_path_to_socket = '/var/mysql/mysql.sock'
 def dbConnect(dBhost=def_dBhost,dBuser=def_dBuser,\
               dBpass=def_dBpass,dBname=def_dBname,\
               path_to_socket=def_path_to_socket):
-    """ the basic MySQLdb connector to the 'flopbuster' database """
+    """ the basic MySQLdb connector to the 'flopbuster' database  """
     
     db = MySQLdb.connect(host=dBhost, user=dBuser,\
                          passwd=dBpass,db=dBname,unix_socket=path_to_socket)
@@ -40,7 +40,8 @@ def getGrosses_BoxOffice(notNulls=['budget','usgross','worldgross']):
         notNulls (keyword) sets is used to filter out nulls form the columns
         presented in the list. For e.g. if notNulls=['budget','worldgross'], 
         the resulting table will only include those movies where 'budget' and
-        'worldgross' are not NULLs. """
+        'worldgross' are not NULLs. 
+    """
     
     cursor = dbConnect()
     foo = 'select budget,usgross,worldgross,title from boxoffice'
@@ -89,6 +90,50 @@ def getInfluenceHistory(person):
     OutMetric[indx_zeros] = 0e0
 
     return release,OutMetric,title
+
+def getTitlesByPartTest(part,yearDivide):
+
+    cursor = dbConnect()
+
+    statement1 = 'select title from boxoffice where released > \"%s\"' % (yearDivide)
+    statement1 += ' and boxoffice.title = any '
+    statement1 += '(select title from movie_meta where part = '
+    statement1 += ' \"%s\");' % (part)
+
+    cursor.execute(statement1)
+    results = cursor.fetchall()
+
+    titles =[x[0] for x in results]
+
+    return titles
+
+def getTitlesByPart(part,yearDivide):
+
+    cursor = dbConnect()
+
+    statement1 = 'select title from boxoffice where released < \"%s\"' % (yearDivide)
+    statement1 += ' and boxoffice.title = any '
+    statement1 += '(select title from movie_meta where part = '
+    statement1 += ' \"%s\");' % (part)
+
+    cursor.execute(statement1)
+    results = cursor.fetchall()
+
+    titles =[x[0] for x in results]
+
+    return titles
+
+def getInfluenceByYearPart(part,year):
+
+    year  = year+'-01-01'
+    cursor = dbConnect()
+    statement1 = 'select influence from influence where '
+    statement1 += '(part = \"%s\" and year = \"%s\");' % (part,year)
+
+    cursor.execute(statement1)
+    results = cursor.fetchall()
+    influence = [x[0] for x in results]
+    return influence[0]
 
 def getPartHistory(personName):
     """ get the list of roles played by a given person """

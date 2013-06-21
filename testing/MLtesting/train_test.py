@@ -18,7 +18,6 @@ test = cPickle.load(test_file)
 metric_test_file = open('MetricFile_Test.pickle',"rb")
 metric_test = cPickle.load(metric_test_file)
 
-
 rf = RandomForestClassifier(n_estimators=200, \
                             min_samples_split=2, n_jobs=-1)
 
