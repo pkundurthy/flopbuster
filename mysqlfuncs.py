@@ -38,7 +38,6 @@ def results_to_list(results,index=0):
     return [x[index] for x in results]
 
 ## ------ Start section on functions related to the boxoffice table ------ ##
-
 def get_titles_boxoffice():
     """ get list of all movie titles from boxoffice table """
     
@@ -90,6 +89,7 @@ def get_released_dates(movieName):
     release_date = results_to_list(results,index=0)
     return release_date[0]
 
+## ----- Start section on functions that work on the `influence` table ----- ##
 def get_influence_byYear(part,year):
     """ return the influence number for a given year for a given part. """
 

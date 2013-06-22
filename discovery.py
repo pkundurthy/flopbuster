@@ -2,6 +2,7 @@
 import numpy as num
 from flopbuster.readdb import getInfluenceHistory, getPartHistory, getReleaseDateMovie
 from flopbuster.misc import getYear
+from readdb import dbConnect
 
 def getResponseTraining(year='2006-12-31'):
     """   """
