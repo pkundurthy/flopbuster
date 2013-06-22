@@ -1,4 +1,6 @@
 flopbuster
 ==========
 
-IDS project on predictive analytics
+Insight Data Science project
+
+
