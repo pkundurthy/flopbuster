@@ -9,7 +9,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="brand" href="#">Flopbuster</a>
+              <a class="brand" href="/">Flopbuster</a>
               <div class="nav-collapse collapse">
                 <ul class="nav">
                   <li><a href="/">Home</a></li>
@@ -22,29 +22,27 @@
         </div>
 {%endblock%}
 {% block content %}
-    .input-append button.add-on{
-      height: inherit !important;
-  }
     <div class="container-narrow">
       <!-- The main text of the page -->
       <div class="jumbotron">
-        <h2>Flopbuster!</h2> <br> <br>
-
-        <form class="form-search" action="/app" method="POST">
-          <div class="input-append">
-            <input type="text" class="span2 search-query">
-              <button type="submit" class="btn-small">
-                 <i class="icon-play"></i>
+        <h2>Flopbuster!</h2> <br> <h3> (Search like it's 2006) </h3> <br>
+ <!--          <form class="form-search" action="/app" method="POST">
+            <div class="input-append">
+              <input type="text" class="span2 search-query">
+                <button type="submit" class="btn-small">
+                <i class="icon-play"></i>
               </button>
           </div>
-        </form>
+        </form> -->
 
-        <!-- <div class='row'>
+        <div class='row'>
             <form action="/app" method="POST">
             <input type="text" name="text">
-            <input type="submit" class="btn-small" class="icon-white icon-play" value="Search">
+            <button type="submit" class="btn-small">
+            <i class="icon-play"></i>
+            <!--<input type="submit" class="btn-small" class="icon-white icon-play" value="Search">-->
             </form>
-        </div> -->
+        </div>
 
 <!--       <form class="navbar-search pull-left">
       <input type="text" class="search-query" placeholder="Search for Movie" value=" " >

@@ -1,7 +1,7 @@
 from contextlib import closing
 from flask import Flask, render_template, request
 import os
-import flopbuster
+from flopbuster import site
 
 
 app = Flask(__name__)
@@ -22,10 +22,14 @@ def toapp(name=None):
 @app.route('/app', methods=['POST'])
 def myrun_search():
     search_term = request.form['text']
-    results  = flopbuster.readdb.grabMovieComparison(search_term)
-    out = results
-    return render_template('results.html', post_links=out)
-
+    MovieData = site.compileMovieData(search_term)
+    Actual,Predict,Budget = site.MovieComparison(search_term)
+    grossInfo = ['$'+Actual,'$'+Predict,'$'+Budget]
+    DInfo = ', '.join(MovieData['Director(s)'])
+    AInfo = ', '.join(MovieData['Actor(s)'])
+    WInfo = ', '.join(MovieData['Writer(s)'])
+    GInfo = ', '.join(MovieData['Genre'])
+    return render_template('results.html', InfoSet=[search_term,GInfo,DInfo,AInfo,WInfo],gross=grossInfo)
 
 if __name__ == "__main__":
     app.debug = True
