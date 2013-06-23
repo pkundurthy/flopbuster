@@ -1,46 +1,47 @@
-import MySQLdb
-from flopbuster.misc import getYear
-from flopbuster.readdb import dbConnect
 import numpy as num
+from flopbuster import misc
+from flopbuster import mysqlfuncs
 
-def getBudget(movieName,movieYear):
-    """                          """
-
-    cursor = dbConnect()
+def MovieBudget(movieName,movieYear):
+    """ retrive the budget for a given movie, and the year of make """
 
     statement1 = 'select released,title,budget from boxoffice'
     statement1 += ' where (title = \"%s\");' % movieName
 
-    cursor.execute(statement1)
-    results = cursor.fetchall()
+    results = mysqlfuncs.db_execute_and_fetch(statement1)
+    yearUnformatted = mysqlfuncs.results_to_list(results,index=0)
+    yearReleased = num.array([long(misc.getYear(x.strftime("%Y-%m-%d"))) \
+                    for x in yearUnformatted])
 
-    yearReleased = num.array([long(getYear(x[0].strftime("%Y-%m-%d"))) for x in results])
-    titles =  [x[1] for x in results]
-    budgets = num.array([x[2] for x in results])
-    
+    titles = mysqlfuncs.results_to_list(results,index=1)
+    budgets = num.array(mysqlfuncs.results_to_list(results,index=2))
+
+    # remove title ambiguiities by matching the release year
     if len(yearReleased) > 1:
         idx = num.where(yearReleased = movieYear)[0]
     else:
         idx = 0
 
-    return budgets[0]
+    return budgets[idx]
 
 def MovieComparison(movieName):
-    """                     """
+    """ Retrive actual movie gross, the predicted gross and budget
+        for a given movie. """
 
-    cursor = dbConnect()
+    # setup query statement
     statement1 = 'select year,predicted,actual '
     statement1 += 'from Property001 where (title = \"%s\");' % movieName
 
-    cursor.execute(statement1)
-    results = cursor.fetchall()
+    results = mysqlfuncs.db_execute_and_fetch(statement1)
     
-    year = [long(getYear(x[0].strftime('%Y-%m-%d'))) for x in results]
-    predictedFactor = [x[1] for x in results]
-    actualFactor = [x[2] for x in results]
+    yearUnformatted = mysqlfuncs.results_to_list(results,index=0)
+    year = [long(misc.getYear(x.strftime('%Y-%m-%d'))) for x in yearUnformatted]
 
-    budget = getBudget(movieName,year[0])
+    predictedFactor = mysqlfuncs.results_to_list(results,index=1)
+    actualFactor = mysqlfuncs.results_to_list(results,index=2)
+    budget = MovieBudget(movieName,year[0])
     
+    # convert to currency string format for output to page
     ActualGross =  '{:20,.0f}'.format(10**(actualFactor[0]) * budget)
     PredictedGross = '{:20,.0f}'.format(10**(predictedFactor[0]) * budget)
     BudgetString = '{:20,.0f}'.format(budget)
@@ -48,34 +49,35 @@ def MovieComparison(movieName):
 
 
 def compileMovieData(movieName):
-    """                             """
+    """ Compile printable JSON-like dictionary to print movie meta-data
+        to webpage. """
 
-    cursor = dbConnect()
+    # setup statements to get info about Directors, Actors, Writers and Genre
+    # for a given movie.
     statementRoot = 'select distinct(part) from movie_meta where '
-    statement1 = statementRoot+'(partType = \"Director\" and title = \"%s\");' % (movieName)
-    statement2 = statementRoot+'(partType = \"Actors\" and title = \"%s\");' % (movieName)
-    statement3 = statementRoot+'(partType = \"Writer\" and title = \"%s\");' % (movieName)
-    statement4 = statementRoot+'(partType = \"Genre\" and title = \"%s\");' % (movieName)
+    statement1 = statementRoot+'(partType = \"Director\" and title = \"%s\");'\
+                % (movieName)
+    statement2 = statementRoot+'(partType = \"Actors\" and title = \"%s\");'\
+                % (movieName)
+    statement3 = statementRoot+'(partType = \"Writer\" and title = \"%s\");'\
+                % (movieName)
+    statement4 = statementRoot+'(partType = \"Genre\" and title = \"%s\");'\
+                % (movieName)
     
-    cursor.execute(statement1)
-    results1 = cursor.fetchall()
-    Directors = [x[0] for x in results1]
+    # get results for query for directors, actors, writers and genre
+    results1 = mysqlfuncs.db_execute_and_fetch(statement1)
+    results2 = mysqlfuncs.db_execute_and_fetch(statement2)
+    results3 = mysqlfuncs.db_execute_and_fetch(statement3)
+    results4 = mysqlfuncs.db_execute_and_fetch(statement4)
 
-    cursor.execute(statement2)
-    results2 = cursor.fetchall()
-    Actors = [x[0] for x in results2]
+    Directors = mysqlfuncs.results_to_list(results1,index=0)
+    Actors = mysqlfuncs.results_to_list(results2,index=0)
+    Writers = mysqlfuncs.results_to_list(results3,index=0)
+    Genre = mysqlfuncs.results_to_list(results4,index=0)
 
-    cursor.execute(statement3)
-    results3 = cursor.fetchall()
-    Writers = [x[0] for x in results3]
-
-    cursor.execute(statement4)
-    results4 = cursor.fetchall()
-    Genre = [x[0] for x in results4]
-
-    out =  {'Director(s)':Directors,'Actor(s)':Actors,\
+    outDict =  {'Director(s)':Directors,'Actor(s)':Actors,\
             'Writer(s)':Writers,'Genre':Genre}
-    return out
+    return outDict
 
 
 

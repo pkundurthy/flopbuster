@@ -5,17 +5,19 @@ num.seterr(divide='ignore')
 import cPickle
 import datetime
 import unicodedata
+import os
+module_path = os.path.dirname(__file__)+'/'
 
-DB_CONNECTION_INFO = cPickle.load(open('DBCONNECT.pickle','rb'))
+DB_CONNECTION_INFO = cPickle.load(open(module_path+'DBCONNECT.pickle','rb'))
 unidef_dB_host = DB_CONNECTION_INFO['dbHost']
 unidef_dB_user = DB_CONNECTION_INFO['dbUser']
 unidef_dB_pass = DB_CONNECTION_INFO['dbPass']
 unidef_dB_name = DB_CONNECTION_INFO['dbName']
-unidef_dB_path_to_socket = DB_CONNECTION_INFO['path_to_socket']
+unidef_path_to_socket = DB_CONNECTION_INFO['path_to_socket']
 
-## ------   Start section on functions to perform basic db operation ----- ##
-def db_connect(dBhost=unidef_dB_host,dB_user=unidef_dB_user,\
-              dBpass=unidef_dB_pass,dB_name=unidef_dB_name,\
+## ---- Start section on functions to perform basic db operation --- ##
+def db_connect(dBhost=unidef_dB_host,dBuser=unidef_dB_user,\
+              dBpass=unidef_dB_pass,dBname=unidef_dB_name,\
               path_to_socket=unidef_path_to_socket):
     """ the basic MySQLdb connector to the 'flopbuster' database  """
     
@@ -27,8 +29,8 @@ def db_connect(dBhost=unidef_dB_host,dB_user=unidef_dB_user,\
 def db_execute_and_fetch(statement):
     """ execute statement on cursor and fetchall results"""
 
-    cursor = dbConnect()
-    cursor.execute(statement1)
+    cursor = db_connect()
+    cursor.execute(statement)
     results = cursor.fetchall()
     return results
 
@@ -37,7 +39,7 @@ def results_to_list(results,index=0):
 
     return [x[index] for x in results]
 
-## ------ Start section on functions related to the boxoffice table ------ ##
+## --- Start section on functions related to the boxoffice table --- ##
 def get_titles_boxoffice():
     """ get list of all movie titles from boxoffice table """
     
@@ -65,7 +67,6 @@ def get_grosses_boxoffice(notNulls=['budget','usgross','worldgross']):
     statement1 += ');'
 
     results = db_execute_and_fetch(statement1)
-
 
     # get the budget, usgross, world gross and titles
     budget = num.array(results_to_list(results,index=0))
@@ -129,11 +130,11 @@ def get_successMetric_history(person):
 
     return release,successMetric,title
 
-def get_titles_byPart(part,yearDivide,before=True):
+def get_titles_byPart(part,yearDivide,is_before=True):
     """ for a given part (aka Feature) return the movie titles
         before or after a given year. """
 
-    if before:
+    if is_before:
         greater_less = '<'
     else:
         greater_less = '>'
@@ -151,7 +152,14 @@ def get_titles_byPart(part,yearDivide,before=True):
     return titles
 
 def get_title_partType_byPart(partName):
-    """ get the list of roles played by a given person """
+    """ get the list of roles played by a given person. 
+    partHist is a dictionary which returns lists of roles by a given 
+    part/Feature for every movie they've taken part in 
+    e.g. partName = John Smith
+    movies = ['Action Blast I','Depressing Stuff','Action Blast II']
+    partHist = {'Action Blast I':['Actor'],\
+                'Depressing Stuff':['Writer','Director'],\
+                'Action Blast II': ['Actor']} """
 
     statement1 = \
     "select title, partType from movie_meta where movie_meta.part = \"%s\";" \
@@ -160,14 +168,6 @@ def get_title_partType_byPart(partName):
     results = db_execute_and_fetch(statement1)
     titles = results_to_list(results,index=0)
     partType = results_to_list(results,index=1)
-
-    # partHist is a dictionary which returns lists of roles by a given 
-    # part/Feature for every movie they've taken part in 
-    # e.g. partName = John Smith
-    # movies = ['Action Blast I','Depressing Stuff','Action Blast II']
-    # partHist = {'Action Blast I':['Actor'],\
-    #             'Depressing Stuff':['Writer','Director'],\
-    #             'Action Blast II': ['Actor']}
 
     partHist = {}
     for i in range(len(titles)):
@@ -185,15 +185,16 @@ def get_FeatureSet(partTypes=None):
      """
 
     if partTypes == None:
-        appendStatement = ';'
+        appendStatement = ''
     else:
-        appendStatement = ' where( '
+        appendStatement = 'where( '
         appendStatement += \
-        ' or '.join(['partType = '+x for x in partTypes])
-        appendStatement += ');'
+        ' or '.join(['partType = '+'\"'+x+'\"' for x in partTypes])
+        appendStatement += ')'
 
-    statement1 = 'select distinct(part) from movie_meta order by part'
+    statement1 = 'select distinct(part) from movie_meta '
     statement1 += appendStatement
+    statement1 += ' order by part asc;'
 
     results = db_execute_and_fetch(statement1)
     FeatureSet = results_to_list(results,index=0)

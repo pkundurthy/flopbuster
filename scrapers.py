@@ -48,7 +48,8 @@ def scrape_getthenumbers(outFile):
     out_file = open(outFile, 'w')
     print >> out_file, head_line
 
-    #hard coding the row at which the movie table actually begins
+    # hard coding the row at which the movie table 
+    # begins, on the web-page.
     start_row = 67
     lenght_array = []
     for i in range(len(rows)):
@@ -95,7 +96,6 @@ def sqlready_csv(inFile,outFile):
         if doPrint: 
             lineOut = ','.join(splitMap)
             print >> fileClean, lineOut
-            #print lineOut
     
     fileClean.close()
 
@@ -123,7 +123,8 @@ class ImdbAPIFunction:
     def _process(self):
         movie = re.sub(' ','+',self.title)
         try:
-            movie = unicodedata.normalize('NFKD', movie).encode('ascii','ignore')
+            movie = \
+                unicodedata.normalize('NFKD', movie).encode('ascii','ignore')
         except:
             pass
 
@@ -144,19 +145,12 @@ class ImdbAPIFunction:
         useList = list(set.intersection(set(NeedList),set(HaveList)))
         self.keylist = useList
         for key in useList:
-            new_key = unicodedata.normalize('NFKD', key).encode('ascii','ignore')
-            new_dataform = unicodedata.normalize('NFKD', self.data[key]).encode('ascii','ignore')
+            new_key = \
+                unicodedata.normalize('NFKD', key).encode('ascii','ignore')
+            new_dataform = unicodedata.normalize('NFKD',\
+                                self.data[key]).encode('ascii','ignore')
             dSplit00 = map(str, new_dataform.split(', '))
-            # dSplit01 = [unicodedata.normalize('NFKD',x).encode('ascii','ignore') for x in dSplit00]
             newdata[new_key] = dSplit00
 
-        # for key in [u'Year',u'imdbID']:
-        #     new_key = unicodedata.normalize('NFKD', key).encode('ascii','ignore')
-        #     new_value = unicodedata.normalize('NFKD', self.data[key].strip()).encode('ascii','ignore')
-        #     newdata[new_key] = new_value
-
         self.out = newdata
-
-
-# class wikiPlotScraper:
 
