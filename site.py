@@ -47,7 +47,6 @@ def MovieComparison(movieName):
     BudgetString = '{:20,.0f}'.format(budget)
     return ActualGross, PredictedGross, BudgetString
 
-
 def compileMovieData(movieName):
     """ Compile printable JSON-like dictionary to print movie meta-data
         to webpage. """

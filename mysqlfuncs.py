@@ -122,7 +122,7 @@ def get_successMetric_history(person):
     budget = num.array(results_to_list(results,index=3),dtype=float)
 
     # compute the sucess metric = log10(totalGross/budget)
-    successMetric = num.log10(totalGross/budget)
+    successMetric = totalGross/budget
 
     # change -inf values to zeros
     indx_zeros = num.where(successMetric == num.float('-inf'))[0]
@@ -178,25 +178,5 @@ def get_title_partType_byPart(partName):
 
     return partHist
 
-def get_FeatureSet(partTypes=None):
-    """ return a given FeatureSet/part(s) 
-        keyword option partTypes is either None or a list
-        of partTypes
-     """
 
-    if partTypes == None:
-        appendStatement = ''
-    else:
-        appendStatement = 'where( '
-        appendStatement += \
-        ' or '.join(['partType = '+'\"'+x+'\"' for x in partTypes])
-        appendStatement += ')'
-
-    statement1 = 'select distinct(part) from movie_meta '
-    statement1 += appendStatement
-    statement1 += ' order by part asc;'
-
-    results = db_execute_and_fetch(statement1)
-    FeatureSet = results_to_list(results,index=0)
-    return FeatureSet
 
