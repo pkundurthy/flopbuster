@@ -1,11 +1,11 @@
 from contextlib import closing
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 import os
 from flopbuster import site
-import socket
 
 app = Flask(__name__)
-app.debug = True
+# app.debug = True
+# host = 'http://www.flopbuster.com/'
 
 @app.route("/")
 def hello(name=None):

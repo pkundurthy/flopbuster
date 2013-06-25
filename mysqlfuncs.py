@@ -6,6 +6,7 @@ import cPickle
 import datetime
 import unicodedata
 import os
+import socket
 module_path = os.path.dirname(__file__)+'/'
 
 DB_CONNECTION_INFO = cPickle.load(open(module_path+'DBCONNECT.pickle','rb'))
@@ -13,7 +14,11 @@ unidef_dB_host = DB_CONNECTION_INFO['dbHost']
 unidef_dB_user = DB_CONNECTION_INFO['dbUser']
 unidef_dB_pass = DB_CONNECTION_INFO['dbPass']
 unidef_dB_name = DB_CONNECTION_INFO['dbName']
-unidef_path_to_socket = DB_CONNECTION_INFO['path_to_socket']
+
+if socket.gethostbyname(socket.gethostname()).startswith('192'):
+    unidef_path_to_socket = DB_CONNECTION_INFO['path_to_socket']
+else:
+    unidef_path_to_socket = '/var/run/mysqld/mysqld.sock'
 
 ## ---- Start section on functions to perform basic db operation --- ##
 def db_connect(dBhost=unidef_dB_host,dBuser=unidef_dB_user,\
