@@ -107,7 +107,6 @@ class feature:
         self.ReleaseYears = [int(misc.getYear(RDate.strftime("%Y-%m-%d")))\
                              for RDate in self.ReleaseDates]
 
-
         # find the first and last years in which a release was made
         min_date = min(self.ReleaseDates).strftime("%Y-%m-%d")
         max_date = max(self.ReleaseDates).strftime("%Y-%m-%d")
@@ -126,20 +125,46 @@ class feature:
         self.InfluenceMultiplier = \
             InfluenceMultiplier(partHist,self.MovieTitles)
 
-    # def computeInfluenceHistory(self,half_life=3.0):
+    def computeInfluenceHistory(self,half_life=3.0,currentYear=2013):
 
-    #     self.half_life = num.float(half_life)
+        self.half_life = num.float(half_life)
+        Impact = []
+        decay_list = []
+        yearImpact = []
+        # run through all the years for each movie title
+        for i in range(len(self.MovieTitles)-1):
+            impactNumber = self.InfluenceMultiplier[i]*\
+                              self.successMetric[i]
+            # if the given release year is equal to the year 
+            # of debut then set decay to newbie setting
+            if self.ReleaseYears[i] == self.Year_of_FirstRelease:
+                delta_time = 3.0
+                decay = (0.5)**(delta_time/self.half_life)
+                # check for multiple released during debut year
+                if len(Impact) != 0:
+                    Impact[-1] += impactNumber
+                else:
+                    Impact.append(impactNumber*decay)
+                    decay_list.append(decay)
+                    yearImpact.append(self.ReleaseYears[i])
+            elif self.ReleaseYears[i] > self.Year_of_LastRelease:
+                # this should never happen, since feature object
+                # aggregates all the data for a given feature
+                raise NameError("release date is after last release")
+            else:
+                # for all other cases than the debut year release
+                delta_time = self.ReleaseYears[i]-self.ReleaseYears[i-1]
+                decay = (0.5)**(delta_time/self.half_life)
+                # check for multiple releases
+                if delta_time == 0.0:
+                    Impact[-1] += impactNumber
+                else:
+                    Impact.append(Impact[-1]*decay + impactNumber)
+                    decay_list.append(decay)
+                    yearImpact.append(self.ReleaseYears[i])
+        
 
-    #     for i in range(len(self.MovieTitles)):
-    #         delta_time = 
-    #         if self.ReleaseDates[i] == self.Year_of_FirstRelease:
-    #             delta_time = 0.0
-    #         elif self.ReleaseDates[i] > self.Year_of_LastRelease:
-    #             delta_time = 
-    #         else:
-    #             delta_time = self.ReleaseDates[i+1]-self.ReleaseDates[i]
-
-    #         decay = (0.5)**(delta_time/self.half_life)
-
-
+        self.decay_list = decay_list
+        self.yearImpact = yearImpact
+        self.Impact = Impact
 
