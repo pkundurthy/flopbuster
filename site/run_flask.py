@@ -29,8 +29,11 @@ def myrun_search():
     AInfo = ', '.join(MovieData['Actor(s)'])
     WInfo = ', '.join(MovieData['Writer(s)'])
     GInfo = ', '.join(MovieData['Genre'])
-    return render_template('results.html', InfoSet=[search_term,GInfo,DInfo,AInfo,WInfo],gross=grossInfo)
+    return render_template('results.html',\
+             InfoSet=[search_term,GInfo,DInfo,AInfo,WInfo],gross=grossInfo)
 
 if __name__ == "__main__":
-    app.debug = True
     app.run('0.0.0.0')
+    # run locally
+    #app.debug = True
+    # app.run()
