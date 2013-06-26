@@ -15,7 +15,6 @@ def hello(name=None):
 def about(name=None):
     return render_template('about.html',name=name)
 
-
 @app.route("/slides")
 def about(name=None):
     return render_template('slides.html',name=name)
@@ -40,5 +39,5 @@ def myrun_search():
 if __name__ == "__main__":
     app.run('0.0.0.0', port=80)
     # run locally
-    #app.debug = True
-    # app.run()
+    # app.debug = True
+    app.run()
