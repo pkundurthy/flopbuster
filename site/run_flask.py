@@ -2,6 +2,7 @@ from contextlib import closing
 from flask import Flask, render_template, request, redirect
 import os
 from flopbuster import site
+import source
 
 app = Flask(__name__)
 # app.debug = True
@@ -37,7 +38,8 @@ def myrun_search():
              InfoSet=[search_term,GInfo,DInfo,AInfo,WInfo],gross=grossInfo)
 
 if __name__ == "__main__":
-    app.run('0.0.0.0', port=80)
+
+    # app.run('0.0.0.0', port=80)
     # run locally
     # app.debug = True
     app.run()
