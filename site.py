@@ -8,9 +8,9 @@ def tens_letter(nzeros):
 
     outLetter = ' '
     if nzeros == 6:
-        outLetter = ' M'
+        outLetter = ' Million'
     if nzeros == 9:
-        outLetter = ' B'
+        outLetter = ' Billion'
 
     return outLetter
 

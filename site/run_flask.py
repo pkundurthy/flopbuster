@@ -15,6 +15,11 @@ def hello(name=None):
 def about(name=None):
     return render_template('about.html',name=name)
 
+
+@app.route("/slides")
+def about(name=None):
+    return render_template('slides.html',name=name)
+
 @app.route("/app")
 def toapp(name=None):
     return render_template('app.html',name=name)
