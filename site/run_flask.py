@@ -38,8 +38,14 @@ def myrun_search():
              InfoSet=[search_term,GInfo,DInfo,AInfo,WInfo],gross=grossInfo)
 
 if __name__ == "__main__":
+    
+    if socket.gethostbyname(socket.gethostname()).startswith('192'):
+        address = '127.0.0.1'
+        portNum = 5000
+    else:
+        address = '0.0.0.0'
+        portNum = 80
 
-    # app.run('0.0.0.0', port=80)
+    app.run(address, port=portNum)
     # run locally
     # app.debug = True
-    app.run()
