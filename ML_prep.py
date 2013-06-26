@@ -4,6 +4,7 @@ from flopbuster import mysqlfuncs
 from flopbuster import misc
 
 DEFAULT_YearDivide = '2006-12-31'
+DEFAULT_halflife = 3.0
 
 def assignInfluenceWeight(partType):
     """ weight the influence """
@@ -125,7 +126,29 @@ class feature:
         self.InfluenceMultiplier = \
             InfluenceMultiplier(partHist,self.MovieTitles)
 
-    def computeInfluenceHistory(self,half_life=3.0,currentYear=2013):
+    def computeProfitability(self,half_life=DEFAULT_halflife):
+        
+        self.half_life = num.float(half_life)
+        profitability = []
+        yearImpact = {}
+        for i in range(len(self.MovieTitles)-1):
+            if yearImpact.has_key(self.ReleaseYears[i]):
+                yearImpact[self.ReleaseYears[i]] += \
+                     self.successMetric[i]
+            else:
+                yearImpact[self.ReleaseYears[i]] = \
+                     self.successMetric[i]
+
+        yProf = num.array(yearImpact.keys())
+        Prof = num.array(yearImpact.values())
+        indxsort = yProf.argsort()
+        self.yearProfit = yProf[indxsort]
+        self.profit = Prof[indxsort]
+
+
+
+
+    def computeInfluenceHistory(self,half_life=DEFAULT_halflife,currentYear=2013):
 
         self.half_life = num.float(half_life)
         Impact = []

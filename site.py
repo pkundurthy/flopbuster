@@ -2,6 +2,37 @@ import numpy as num
 from flopbuster import misc
 from flopbuster import mysqlfuncs
 
+
+def tens_letter(nzeros):
+    """             """
+
+    outLetter = ' '
+    if nzeros == 6:
+        outLetter = ' M'
+    if nzeros == 9:
+        outLetter = ' B'
+
+    return outLetter
+
+def million_billion_format(number):
+    """ convertion large box-office numbers to readable format """
+
+    strLen = len(format(number,'.0f'))
+
+    if strLen > 9:
+        nzeros = 9
+        OutStr = format(number/1E9,'.1f')
+    elif strLen > 6:
+        nzeros = 6
+        OutStr = format(number/1E6,'.0f')
+    else:
+        nzeros = 0
+        OutStr = format(number/1E3,'.0f')+',000'
+
+    OutStr += tens_letter(nzeros)
+
+    return OutStr
+
 def MovieBudget(movieName,movieYear):
     """ retrive the budget for a given movie, and the year of make """
 
@@ -40,11 +71,15 @@ def MovieComparison(movieName):
     predictedFactor = mysqlfuncs.results_to_list(results,index=1)
     actualFactor = mysqlfuncs.results_to_list(results,index=2)
     budget = MovieBudget(movieName,year[0])
-    
+
+    ActualGross = million_billion_format(10**(actualFactor[0]) * budget)
+    PredictedGross = million_billion_format(10**(predictedFactor[0]) * budget)
+    BudgetString = million_billion_format(budget)
+
     # convert to currency string format for output to page
-    ActualGross =  '{:20,.0f}'.format(10**(actualFactor[0]) * budget)
-    PredictedGross = '{:20,.0f}'.format(10**(predictedFactor[0]) * budget)
-    BudgetString = '{:20,.0f}'.format(budget)
+    # ActualGross =  '{:20,.0f}'.format(10**(actualFactor[0]) * budget)
+    # PredictedGross = '{:20,.0f}'.format(10**(predictedFactor[0]) * budget)
+    # BudgetString = '{:20,.0f}'.format(budget)
     return ActualGross, PredictedGross, BudgetString
 
 def compileMovieData(movieName):
