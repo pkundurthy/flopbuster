@@ -26,38 +26,15 @@
     <div class="container-narrow">
       <!-- The main text of the page -->
       <div class="jumbotron">
-        <h2>Flopbuster!</h2> <br> <h3> (Search like it's 2006) </h3> <br>
- <!--          <form class="form-search" action="/app" method="POST">
-            <div class="input-append">
-              <input type="text" class="span2 search-query">
-                <button type="submit" class="btn-small">
-                <i class="icon-play"></i>
-              </button>
-          </div>
-        </form> -->
-
-        <div class='row'>
-            <form action="/app" method="POST">
-            <input type="text" name="text">
-            <button type="submit" class="btn-small">
-            <i class="icon-play"></i>
-            <!--<input type="submit" class="btn-small" class="icon-white icon-play" value="Search">-->
-            </form>
-        </div>
-
-<!--       <form class="navbar-search pull-left">
-      <input type="text" class="search-query" placeholder="Search for Movie" value=" " >
-      <p> or </p>
-      <input type="text" class="search-query" placeholder="Search for Director(s)">
-      <p> and </p>
-      <input type="text" class="search-query" placeholder="Search for Actor(s)">
-      <p> and </p>
-      <input type="text" class="search-query" placeholder="Search for Genre">
- -->    
+        <h2>Flopbuster!</h2> <br> <h3> Search like it's 2006... </h3> <br>
+         <form class="form-search" action="/app" method="POST">
+          <input class="input-large search-query" type="text" name="text"></input>
+          <button class="btn btn-inverse btn-small " type="submit">
+              <h4> Search </h>
+          </button>
+        </form>
       </div>
-
-      </form>
-
+    <hr>
     </div>
 {% endblock %}
 {% block acks %} <p class="lead"> &nbsp Powered by data from <a href='http://www.imdb.com'> IMDB</a> and <a href='http://www.the-numbers.com'> the-numbers.com </a></p> {% endblock %}

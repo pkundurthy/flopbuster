@@ -2,7 +2,7 @@ from contextlib import closing
 from flask import Flask, render_template, request, redirect
 import os
 from flopbuster import site
-import source
+import socket
 
 app = Flask(__name__)
 # app.debug = True
@@ -16,8 +16,12 @@ def hello(name=None):
 def about(name=None):
     return render_template('about.html',name=name)
 
+@app.route("/charts")
+def charts(name=None):
+    return render_template('charts.html',name=name)
+
 @app.route("/slides")
-def about(name=None):
+def slides(name=None):
     return render_template('slides.html',name=name)
 
 @app.route("/app")
@@ -42,10 +46,10 @@ if __name__ == "__main__":
     if socket.gethostbyname(socket.gethostname()).startswith('192'):
         address = '127.0.0.1'
         portNum = 5000
+        app.debug = True
     else:
         address = '0.0.0.0'
         portNum = 80
 
     app.run(address, port=portNum)
     # run locally
-    # app.debug = True

@@ -24,7 +24,8 @@
 {%endblock%}
 {% block content %}
 <div class="container-narrow">
-  <div class="jumbotron">
+
+  <div class="well">
         <h4>Boxoffice Prospects: {{InfoSet[0]}}</h4>
         <p> <b> Genre: </b> {{InfoSet[1]}} </p>         
         <p> <b> Director(s): </b> {{InfoSet[2]}} </p> 
@@ -34,5 +35,7 @@
         <h4> <b> Predicted Outcome: </b> {{gross[1]}} </h4> 
         <h4> <b> Budget: </b> {{gross[2]}} </h4>
  </div>
+ <hr>
+</div>
 {% endblock %}
 {% block acks %} &nbsp <p class="lead"> &nbsp Powered by data from <a href='http://www.imdb.com'> IMDB</a> and <a href='http://www.the-numbers.com'> the-numbers.com </a></p> {% endblock %}
