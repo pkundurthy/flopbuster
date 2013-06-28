@@ -15,7 +15,7 @@ unidef_dB_user = DB_CONNECTION_INFO['dbUser']
 unidef_dB_pass = DB_CONNECTION_INFO['dbPass']
 unidef_dB_name = DB_CONNECTION_INFO['dbName']
 
-if socket.gethostbyname(socket.gethostname()).startswith('54.'):
+if socket.gethostbyname(socket.gethostname()).startswith('172.'):
     unidef_path_to_socket = '/var/run/mysqld/mysqld.sock'
 else:
     unidef_path_to_socket = DB_CONNECTION_INFO['path_to_socket']
