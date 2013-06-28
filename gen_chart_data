@@ -1,0 +1,11 @@
+$(function () {$('#container').highcharts(
+        {   chart: {type: 'spline'},
+#title
+            xAxis: {type: 'datetime', dateTimeLabelFormats: {year:'%Y'}},
+            yAxis: {title: {text: 'Profitability ' },min: 0.1},
+            tooltip:
+                {formatter: function() {
+                            return '<b>'+ this.series.name +'</b><br/>'+
+                            this.series.id;}},            
+#data 
+        } ) } )

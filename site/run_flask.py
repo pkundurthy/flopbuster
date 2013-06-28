@@ -33,11 +33,12 @@ def myrun_search():
     search_term = request.form['text']
     MovieData = site.compileMovieData(search_term)
     Actual,Predict,Budget = site.MovieComparison(search_term)
-    grossInfo = ['$'+Actual,'$'+Predict,'$'+Budget]
+    grossInfo = [Actual,Predict,Budget]
     DInfo = ', '.join(MovieData['Director(s)'])
     AInfo = ', '.join(MovieData['Actor(s)'])
     WInfo = ', '.join(MovieData['Writer(s)'])
     GInfo = ', '.join(MovieData['Genre'])
+    site.generate_chart(MovieData,search_term)
     return render_template('results.html',\
              InfoSet=[search_term,GInfo,DInfo,AInfo,WInfo],gross=grossInfo)
 

@@ -88,7 +88,7 @@
     </head>
     <body>
         <div id="top-bar">{% block topbar %} {% endblock %}</div>
-        <div id="content">{% block content %}{% endblock %}</div>
+        <div id="content"> {% block content %}{% endblock %}</div>
         <div id="footer">
             {% block footer %}
               {% block acks %} {% endblock %}
@@ -111,8 +111,9 @@
             <script src="/static/js/bootstrap-collapse.js"></script>
             <script src="/static/js/bootstrap-carousel.js"></script>
             <script src="/static/js/bootstrap-typeahead.js"></script>
-            <script src="/static/js/highcharts/highcharts.js"></script>
-            <script src="/static/js/highcharts/js/modules/exporting.js"></script>
-            <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+            <script src="http://code.highcharts.com/highcharts.js"></script>
+            <script src="http://code.highcharts.com/modules/exporting.js"></script>
+        {% block script %}{% endblock %}
     </body>
 </html>

@@ -1,10 +1,15 @@
 import numpy as num
 from flopbuster import misc
 from flopbuster import mysqlfuncs
+from flopbuster import ML_prep
+import os, re
+module_path = os.path.dirname(__file__)+'/'
+
+chart_script_lines = open(module_path+'gen_chart_data','r').readlines()
 
 
 def tens_letter(nzeros):
-    """             """
+    """  compress large boxoffice numbers  """
 
     outLetter = ' '
     if nzeros == 6:
@@ -70,11 +75,14 @@ def MovieComparison(movieName):
 
     predictedFactor = mysqlfuncs.results_to_list(results,index=1)
     actualFactor = mysqlfuncs.results_to_list(results,index=2)
-    budget = MovieBudget(movieName,year[0])
-
-    ActualGross = million_billion_format(10**(actualFactor[0]) * budget)
-    PredictedGross = million_billion_format(10**(predictedFactor[0]) * budget)
-    BudgetString = million_billion_format(budget)
+    budget, ActualGross, PredictedGross, BudgetString = 'Unknown','Unkown','Unkown','Unknown'
+    try:
+        budget = MovieBudget(movieName,year[0])
+        ActualGross = '$'+million_billion_format(10**(actualFactor[0]) * budget)
+        PredictedGross = '$'+million_billion_format(10**(predictedFactor[0]) * budget)
+        BudgetString = '$'+million_billion_format(budget)
+    except:
+        pass
 
     # convert to currency string format for output to page
     # ActualGross =  '{:20,.0f}'.format(10**(actualFactor[0]) * budget)
@@ -109,14 +117,67 @@ def compileMovieData(movieName):
     Writers = mysqlfuncs.results_to_list(results3,index=0)
     Genre = mysqlfuncs.results_to_list(results4,index=0)
 
+
+    print Directors, Actors, Writers, Genre
     outDict =  {'Director(s)':Directors,'Actor(s)':Actors,\
             'Writer(s)':Writers,'Genre':Genre}
     return outDict
 
+def generate_selected_features(outDict):
+    """ generate the profitability plot on the webpage """
 
+    featureList = []
+    for key in ['Director(s)','Actor(s)']:
+        lenF = len(outDict[key])
+        for i in range(lenF):
+            if key == 'Actor(s)' and i <= 3:
+                featureList.append(outDict[key][i])
+            elif key == 'Actor(s)' and i > 3:
+                pass
+            else:
+                featureList.append(outDict[key][i])
 
+    return featureList
 
+def make_chart_data(featureName):
+    """ make series List  """
 
+    featureObject = ML_prep.feature(featureName)
+    featureObject.computeProfitability()
+    featureObject.computeImpactHistory()
 
+    dataList = []
+    for i in range(len(featureObject.Impact)):
+        dataList.append([featureObject.yearImpact[i],\
+                        featureObject.Impact[i]])
+    seriesString = '{name:\"'+featureObject.name+'\",'
 
+    movieListString = ','.join(['\"'+x+'\"' for x in featureObject.MovieTitles])
+    dataListString = str(dataList)
+    seriesString += ' id:['+movieListString+'],'
+    seriesString += ' data:'+dataListString+'}'
 
+    return seriesString
+
+def generate_chart(outDict,movieName):
+    """ make chart script file """
+
+    titleLine = 'title:{text: \"People in %s\"},' % (movieName)
+    featureList = generate_selected_features(outDict)
+    outFile = open(module_path+'/site/static/js/profitability.js','w')
+
+    seriesList = [make_chart_data(x) for x in featureList]
+
+    for line in chart_script_lines:
+        if line.startswith('#title'):
+            print >> outFile, titleLine
+        elif line.startswith('#data'):
+            seriesListString = str(seriesList)
+            seriesListString = re.sub("'","",seriesListString)
+            # seriesListString = re.sub('\\',"",seriesListString)
+            # seriesListString = re.sub("\","",seriesListString)
+            print >> outFile, 'series: '+seriesListString
+        else:
+            print >> outFile, line.strip('\n')
+
+    outFile.close()
