@@ -14,9 +14,9 @@
               <div class="nav-collapse collapse">
                 <ul class="nav">
                   <li><a href="/">Home</a></li>
-                  <li><a href="/app">App</a></li>
+                  <li class="active"><a href="/app">App</a></li>
                   <li><a href="/slides">Slides</a></li>
-                  <li class="active"><a href="/about">About/Contact</a></li>
+                  <li><a href="/about">About/Contact</a></li>
                 </ul>
               </div><!--/.nav-collapse -->
             </div>
@@ -24,25 +24,8 @@
         </div>
 {%endblock%}
 {% block content %}
-<div class="container-narrow">
-      <!-- The main text of the page -->
-    <div class="row">
-      <div class="span3">
-      <div class="well">
-        <img src="/static/img/profile.jpg" class="img-rounded">
-      </div>
-    </div>
-      <div class="span6">
-        <div class="well">
-          <h2> Praveen Kundurthy </h2>
-          <p> Insight Data Science Fellow, June 2013. 
-            <br> PhD. Astronomy, University of Washington, Seattle 
-            <br> <a href="mailto:p.kundurthy7@gmail.com"> Contact me! </a>
-            <br> <a href="http://www.linkedin.com/pub/praveen-kundurthy/28/528/43b"> Link up! </a>
-          </p>
-        </div>
-    </div>
-  </div>
-    <hr>
-</div>  <!-- /container -->
+<div id="container" class="highcharts-container" style="height:375px; margin: 0 2em; clear:both; width: 450px"></div>
 {% endblock %}
+{% block acks %} <p class="lead"> &nbsp Powered by data from <a href='http://www.imdb.com'> IMDB</a> and <a href='http://www.the-numbers.com'> the-numbers.com </a></p> {% endblock %}
+
+

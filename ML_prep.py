@@ -145,10 +145,7 @@ class feature:
         self.yearProfit = yProf[indxsort]
         self.profit = Prof[indxsort]
 
-
-
-
-    def computeInfluenceHistory(self,half_life=DEFAULT_halflife,currentYear=2013):
+    def computeImpactHistory(self,half_life=DEFAULT_halflife,currentYear=2013):
 
         self.half_life = num.float(half_life)
         Impact = []
@@ -185,7 +182,6 @@ class feature:
                     Impact.append(Impact[-1]*decay + impactNumber)
                     decay_list.append(decay)
                     yearImpact.append(self.ReleaseYears[i])
-        
 
         self.decay_list = decay_list
         self.yearImpact = yearImpact

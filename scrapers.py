@@ -6,6 +6,13 @@ import csv
 from BeautifulSoup import BeautifulSoup
 import unicodedata
 
+GoodKeyNames = [u'Plot', u'Rated', u'Title', u'Poster',\
+                u'Writer', u'Response', u'Director', u'Released',\
+                u'Actors', u'Year', u'Genre', u'Runtime', u'Type',\
+                u'imdbRating', u'imdbVotes', u'imdbID']
+BadKeyNames = [u'Response',u'Error']
+
+
 def scrape_getthenumbers(outFile):
     """ a function that simply does a first order scraping 
         of the-numbers.com box office data
@@ -98,13 +105,6 @@ def sqlready_csv(inFile,outFile):
             print >> fileClean, lineOut
     
     fileClean.close()
-
-
-GoodKeyNames = [u'Plot', u'Rated', u'Title', u'Poster',\
-                u'Writer', u'Response', u'Director', u'Released',\
-                u'Actors', u'Year', u'Genre', u'Runtime', u'Type',\
-                u'imdbRating', u'imdbVotes', u'imdbID']
-BadKeyNames = [u'Response',u'Error']
 
 
 class ImdbAPIFunction:

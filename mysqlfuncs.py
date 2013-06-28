@@ -15,10 +15,10 @@ unidef_dB_user = DB_CONNECTION_INFO['dbUser']
 unidef_dB_pass = DB_CONNECTION_INFO['dbPass']
 unidef_dB_name = DB_CONNECTION_INFO['dbName']
 
-if socket.gethostbyname(socket.gethostname()).startswith('192'):
-    unidef_path_to_socket = DB_CONNECTION_INFO['path_to_socket']
-else:
+if socket.gethostbyname(socket.gethostname()).startswith('54.'):
     unidef_path_to_socket = '/var/run/mysqld/mysqld.sock'
+else:
+    unidef_path_to_socket = DB_CONNECTION_INFO['path_to_socket']
 
 ## ---- Start section on functions to perform basic db operation --- ##
 def db_connect(dBhost=unidef_dB_host,dBuser=unidef_dB_user,\

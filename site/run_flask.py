@@ -20,6 +20,10 @@ def about(name=None):
 def slides(name=None):
     return render_template('slides.html',name=name)
 
+@app.route("/charts")
+def charts(name=None):
+    return render_template('charts.html',name=name)
+
 @app.route("/app")
 def toapp(name=None):
     return render_template('app.html',name=name)
@@ -39,13 +43,14 @@ def myrun_search():
 
 if __name__ == "__main__":
     
-    if socket.gethostbyname(socket.gethostname()).startswith('192'):
+    if socket.gethostbyname(socket.gethostname()).startswith('172.'):
+        address = '0.0.0.0'
+        portNum = 80
+        app.debug = False
+    else:
         address = '127.0.0.1'
         portNum = 5000
         app.debug = True
-    else:
-        address = '0.0.0.0'
-        portNum = 80
 
     app.run(address, port=portNum)
     # run locally

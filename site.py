@@ -15,7 +15,7 @@ def tens_letter(nzeros):
     return outLetter
 
 def million_billion_format(number):
-    """ convertion large box-office numbers to readable format """
+    """ converting large box-office numbers to readable format """
 
     strLen = len(format(number,'.0f'))
 
@@ -112,9 +112,6 @@ def compileMovieData(movieName):
     outDict =  {'Director(s)':Directors,'Actor(s)':Actors,\
             'Writer(s)':Writers,'Genre':Genre}
     return outDict
-
-
-
 
 
 
