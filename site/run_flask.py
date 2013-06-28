@@ -47,7 +47,7 @@ if __name__ == "__main__":
     if socket.gethostbyname(socket.gethostname()).startswith('172.'):
         address = '0.0.0.0'
         portNum = 80
-        app.debug = False
+        app.debug = True
     else:
         address = '127.0.0.1'
         portNum = 5000
