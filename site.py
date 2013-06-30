@@ -90,12 +90,11 @@ def MovieComparison(movieName):
 
     predictedFactor = mysqlfuncs.results_to_list(results,index=1)
     actualFactor = mysqlfuncs.results_to_list(results,index=2)
-    budget, ActualGross, PredictedGross, BudgetString = 0,0,0,0
+    Budget, ActualGross, PredictedGross = 0,0,0
     try:
-        budget = MovieBudget(movieName,year[0])
-        ActualGross = 10**(actualFactor[0]) * budget
-        PredictedGross = 10**(predictedFactor[0]) * budget
-        Budget = budget
+        Budget = MovieBudget(movieName,year[0])
+        ActualGross = 10**(actualFactor[0]) * Budget
+        PredictedGross = 10**(predictedFactor[0]) * Budget
     except:
         pass
 
@@ -132,8 +131,6 @@ def compileMovieData(movieName):
     Writers = mysqlfuncs.results_to_list(results3,index=0)
     Genre = mysqlfuncs.results_to_list(results4,index=0)
 
-
-    print Directors, Actors, Writers, Genre
     outDict =  {'Director(s)':Directors,'Actor(s)':Actors,\
             'Writer(s)':Writers,'Genre':Genre}
     return outDict
