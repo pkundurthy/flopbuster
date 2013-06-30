@@ -6,6 +6,7 @@ import os, re
 module_path = os.path.dirname(__file__)+'/'
 
 chart_script_lines = open(module_path+'gen_chart_data','r').readlines()
+barchart_script_lines = open(module_path+'gen_bar_data','r').readlines()
 
 
 def tens_letter(nzeros):
@@ -60,6 +61,20 @@ def MovieBudget(movieName,movieYear):
 
     return budgets[idx]
 
+
+def printCashString(ActualGross,PredictedGross,Budget):
+    """ return cash numbers in string format """
+
+    Act_String, Pred_String, Budget_String = 'Unknown','Unkown','Unkown'
+    if Budget == 0:
+        pass
+    else:
+        Act_String = '$'+million_billion_format(ActualGross)
+        Pred_String = '$'+million_billion_format(PredictedGross)
+        Budget_String = '$'+million_billion_format(Budget)
+
+    return Act_String,Pred_String,Budget_String
+
 def MovieComparison(movieName):
     """ Retrive actual movie gross, the predicted gross and budget
         for a given movie. """
@@ -75,12 +90,12 @@ def MovieComparison(movieName):
 
     predictedFactor = mysqlfuncs.results_to_list(results,index=1)
     actualFactor = mysqlfuncs.results_to_list(results,index=2)
-    budget, ActualGross, PredictedGross, BudgetString = 'Unknown','Unkown','Unkown','Unknown'
+    budget, ActualGross, PredictedGross, BudgetString = 0,0,0,0
     try:
         budget = MovieBudget(movieName,year[0])
-        ActualGross = '$'+million_billion_format(10**(actualFactor[0]) * budget)
-        PredictedGross = '$'+million_billion_format(10**(predictedFactor[0]) * budget)
-        BudgetString = '$'+million_billion_format(budget)
+        ActualGross = 10**(actualFactor[0]) * budget
+        PredictedGross = 10**(predictedFactor[0]) * budget
+        Budget = budget
     except:
         pass
 
@@ -88,7 +103,7 @@ def MovieComparison(movieName):
     # ActualGross =  '{:20,.0f}'.format(10**(actualFactor[0]) * budget)
     # PredictedGross = '{:20,.0f}'.format(10**(predictedFactor[0]) * budget)
     # BudgetString = '{:20,.0f}'.format(budget)
-    return ActualGross, PredictedGross, BudgetString
+    return ActualGross, PredictedGross, Budget
 
 def compileMovieData(movieName):
     """ Compile printable JSON-like dictionary to print movie meta-data
@@ -170,7 +185,7 @@ def make_chart_point(featureName):
 def generate_chart(outDict,movieName):
     """ make chart script file """
 
-    titleLine = 'title:{text: \"People in %s\"},' % (movieName)
+    titleLine = 'title:{text: \"%s\"},' % (movieName)
     featureList = generate_selected_features(outDict)
     outFile = open(module_path+'/site/static/js/profitability.js','w')
 
@@ -189,6 +204,24 @@ def generate_chart(outDict,movieName):
         elif line.startswith('#point'):
             movieListString = str(movieList)
             print >> outFile, 'point: '+movieListString
+        else:
+            print >> outFile, line.strip('\n')
+
+    outFile.close()
+
+def generate_bar_chart(Actual,Predicted,Budget):
+
+    outFile = open(module_path+'/site/static/js/barchart.js','w')
+
+    Act_String, Pred_String, Budget_String = printCashString(Actual,Predicted,Budget)
+
+    outLine = 'series: [ { name:\'Actual %s \', data: [%s] }, ' % (Act_String,Actual)
+    outLine += '{ name:\'Predicted %s \', data: [%s] },' % (Pred_String,Predicted)
+    outLine += '{ name:\'Budget %s \', data: [%s] } ]' % (Budget_String,Budget)
+
+    for line in barchart_script_lines:
+        if line.startswith('#data'):
+            print >> outFile, outLine
         else:
             print >> outFile, line.strip('\n')
 

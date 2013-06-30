@@ -1,8 +1,9 @@
 $(function () {$('#container').highcharts(
         {   chart: {type: 'spline'},
 #title
-            xAxis: {dateTimeLabelFormats: {year:'%Y'}},
-            yAxis: {title: {text: 'Profitability ' },min: 0.1},
+            xAxis: {dateTimeLabelFormats: {year:'%Y'}, 
+            labels:{formatter: function(){ return Highcharts.numberFormat(this.value,0,'','');}}},
+            yAxis: {title: {text: 'Profitability' },min: 0.1},
             tooltip:
                 {formatter: function() {
                             return '<b>'+ this.series.name +'</b><br/>'}},            

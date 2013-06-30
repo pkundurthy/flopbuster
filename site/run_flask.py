@@ -39,6 +39,7 @@ def myrun_search():
     WInfo = ', '.join(MovieData['Writer(s)'])
     GInfo = ', '.join(MovieData['Genre'])
     site.generate_chart(MovieData,search_term)
+    site.generate_bar_chart(Actual,Predict,Budget)
     return render_template('results.html',\
              InfoSet=[search_term,GInfo,DInfo,AInfo,WInfo],gross=grossInfo)
 
