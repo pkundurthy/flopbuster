@@ -159,6 +159,14 @@ def make_chart_data(featureName):
 
     return seriesString
 
+def make_chart_point(featureName):
+
+    featureObject = ML_prep.feature(featureName)
+    featureObject.computeProfitability()
+    featureObject.computeImpactHistory()
+    movieListString = ','.join(['\"'+x+'\"' for x in featureObject.MovieTitles])
+    return movieListString
+
 def generate_chart(outDict,movieName):
     """ make chart script file """
 
@@ -167,6 +175,7 @@ def generate_chart(outDict,movieName):
     outFile = open(module_path+'/site/static/js/profitability.js','w')
 
     seriesList = [make_chart_data(x) for x in featureList]
+    movieList = [make_chart_point(x) for x in featureList]
 
     for line in chart_script_lines:
         if line.startswith('#title'):
@@ -177,6 +186,9 @@ def generate_chart(outDict,movieName):
             # seriesListString = re.sub('\\',"",seriesListString)
             # seriesListString = re.sub("\","",seriesListString)
             print >> outFile, 'series: '+seriesListString
+        elif line.startswith('#point'):
+            movieListString = str(movieList)
+            print >> outFile, 'point: '+movieListString
         else:
             print >> outFile, line.strip('\n')
 
