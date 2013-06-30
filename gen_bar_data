@@ -1,0 +1,33 @@
+$(function () {
+        $('#container').highcharts({
+            chart: {
+                type: 'bar'
+            },
+            title: {text: null},
+            subtitle: {text: null},
+            xAxis: {
+                categories: [''],
+                title: {text: null}
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Earnings / Budget ($)',
+                    align: 'high'
+                },
+                labels: {
+                    overflow: 'justify'
+                }
+            },
+            tooltip:{formatter: function() {
+                            return '<b>'+ this.series.name +'</b><br/>'}},
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: false
+                    }
+                }
+            },
+#data
+        });
+    });
