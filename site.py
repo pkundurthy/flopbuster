@@ -195,8 +195,6 @@ def generate_chart(outDict,movieName):
         elif line.startswith('#data'):
             seriesListString = str(seriesList)
             seriesListString = re.sub("'","",seriesListString)
-            # seriesListString = re.sub('\\',"",seriesListString)
-            # seriesListString = re.sub("\","",seriesListString)
             print >> outFile, 'series: '+seriesListString
         elif line.startswith('#point'):
             movieListString = str(movieList)
@@ -207,14 +205,19 @@ def generate_chart(outDict,movieName):
     outFile.close()
 
 def generate_bar_chart(Actual,Predicted,Budget):
+    """ the function that generates the comparison bar chart """
 
     outFile = open(module_path+'/site/static/js/barchart.js','w')
 
-    Act_String, Pred_String, Budget_String = printCashString(Actual,Predicted,Budget)
+    Act_String, Pred_String, Budget_String = \
+        printCashString(Actual,Predicted,Budget)
 
-    outLine = 'series: [ { name:\'Actual %s \', data: [%s] }, ' % (Act_String,Actual)
-    outLine += '{ name:\'Predicted %s \', data: [%s] },' % (Pred_String,Predicted)
-    outLine += '{ name:\'Budget %s \', data: [%s] } ]' % (Budget_String,Budget)
+    outLine = \
+        'series: [ { name:\'Actual %s \', data: [%s] }, ' % (Act_String,Actual)
+    outLine += \
+        '{ name:\'Predicted %s \', data: [%s] },' % (Pred_String,Predicted)
+    outLine += \
+        '{ name:\'Budget %s \', data: [%s] } ]' % (Budget_String,Budget)
 
     for line in barchart_script_lines:
         if line.startswith('#data'):

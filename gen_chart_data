@@ -3,7 +3,7 @@ $(function () {$('#container').highcharts(
 #title
             xAxis: {dateTimeLabelFormats: {year:'%Y'}, 
             labels:{formatter: function(){ return Highcharts.numberFormat(this.value,0,'','');}}},
-            yAxis: {title: {text: 'Profitability' },min: 0.1},
+            yAxis: {title: {text: 'Impact History' }},
             tooltip:
                 {formatter: function() {
                             return '<b>'+ this.series.name +'</b><br/>'}},            

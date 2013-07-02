@@ -11,13 +11,13 @@ def assignInfluenceWeight(partType):
 
     weightLevel = 0.0
     if partType == 'Director':
-        weightLevel = 2.0
-    elif partType == 'Actors':
         weightLevel = 1.0
+    elif partType == 'Actors':
+        weightLevel = 0.75
     elif partType == 'Writer':
-        weightLevel = 0.5
+        weightLevel = 0.25
     elif partType == 'Genre':
-        weightLevel = 1.5
+        weightLevel = 0.5
     else:
         pass
 
@@ -45,13 +45,9 @@ def retriveResponse(year=DEFAULT_YearDivide,is_training=True):
     totalGross = num.array(mysqlfuncs.results_to_list(results,index=2),\
                             dtype=float)
     budget = num.array(mysqlfuncs.results_to_list(results,index=3),dtype=float)
-    SuccessMetric = num.log10(totalGross/budget)
+    SuccessMetric = misc.returnSuccessMetric(totalGross,budget)
 
-    # replace impossible metrics with zeros
-    indx_zeros = num.where(SuccessMetric == num.float('-inf'))[0]
-    SuccessMetric[indx_zeros] = 0e0
-
-    return releaseYears,title,SuccessMetric
+    return releaseYears,title,SuccessMetric,budget
 
 def InfluenceMultiplier(partHist,titles):
     """ returns array of influence multiplier factors to scale 
@@ -91,6 +87,70 @@ def get_FeatureSet(partTypes=None):
     FeatureSet = mysqlfuncs.results_to_list(results,index=0)
     return FeatureSet
 
+
+class MLdataset:
+
+    def __init__(self, is_training=True,year=DEFAULT_YearDivide,\
+                 partTypes=None):
+
+        if is_training:
+            self.name = 'Training'
+        else:
+            self.name = 'Test'
+
+        self.partTypes = partTypes
+        self.is_training = is_training
+        self.yearDivide = year
+
+        self.featureList = get_FeatureSet(partTypes=partTypes)
+
+        self.relYear,self.titles,self.response,self.budget = \
+            retriveResponse(year=self.yearDivide,is_training=self.is_training)
+
+        lenTitles = len(self.titles)
+        indList = range(lenTitles)
+        self.indexLookup = dict( zip( self.titles, indList ))
+        self.yearLookup = dict( zip( self.titles, self.relYear))
+
+    def FeatureMatrix(self,verbose=True):
+
+        lenRes = len(self.response)
+        lenFeat = len(self.featureList)
+        FMatrix = num.zeros( (lenRes,lenFeat) )
+
+        for iFeat in range(len(self.featureList)):
+            featureName = self.featureList[iFeat]
+            ff_object = feature(featureName)
+            ff_object.computeProfitability()
+            ff_object.computeImpactHistory()
+            impactDict = dict(zip(ff_object.yearImpact,ff_object.Impact))
+            yearList, indexList = [], []
+            for mvName in ff_object.MovieTitles:
+                try:
+                    indexList.append(self.indexLookup[mvName])
+                    yearList.append(int(self.yearLookup[mvName]))
+                except:
+                    pass
+
+            impactList = []
+            for i in range(len(yearList)):
+                try:
+                    impactList.append(impactDict[yearList[i]])
+                except:
+                    impactList.append(1)
+            if verbose: 
+                print featureName,' | entries added ', len(impactList)
+            FMatrix[indexList,iFeat] = impactList
+
+        self.FMatrix = FMatrix
+
+    def appendBudget(self):
+        
+        self.FMatrix = num.hstack( (self.FMatrix,\
+                 self.budget.reshape(len(self.budget),1) ) )
+
+
+
 class feature:
 
     def __init__(self, FeatureName):
@@ -101,8 +161,11 @@ class feature:
     def _history(self):
 
         # get release dates, titles and successMetric from database
-        self.ReleaseDates, self.successMetric, self.MovieTitles = \
+        self.ReleaseDates, self.successMetric, self.MovieTitles, self.budget, self.gross = \
                          mysqlfuncs.get_successMetric_history(self.name)
+
+        # re-normalize successMetric
+        self.successMetric = ((self.successMetric*self.gross) + self.budget)/self.budget
 
         # make an array of only the years of release
         self.ReleaseYears = [int(misc.getYear(RDate.strftime("%Y-%m-%d")))\
@@ -152,7 +215,7 @@ class feature:
         decay_list = []
         yearImpact = []
         # run through all the years for each movie title
-        for i in range(len(self.MovieTitles)-1):
+        for i in range(len(self.MovieTitles)):
             impactNumber = self.InfluenceMultiplier[i]*\
                               self.successMetric[i]
             # if the given release year is equal to the year 

@@ -7,6 +7,7 @@ import datetime
 import unicodedata
 import os
 import socket
+from flopbuster import misc
 module_path = os.path.dirname(__file__)+'/'
 
 DB_CONNECTION_INFO = cPickle.load(open(module_path+'DBCONNECT.pickle','rb'))
@@ -127,13 +128,9 @@ def get_successMetric_history(person):
     budget = num.array(results_to_list(results,index=3),dtype=float)
 
     # compute the sucess metric = log10(totalGross/budget)
-    successMetric = totalGross/budget
+    successMetric = misc.returnSuccessMetric(totalGross,budget)
 
-    # change -inf values to zeros
-    indx_zeros = num.where(successMetric == num.float('-inf'))[0]
-    successMetric[indx_zeros] = 0e0
-
-    return release,successMetric,title
+    return release,successMetric,title,budget,totalGross
 
 def get_titles_byPart(part,yearDivide,is_before=True):
     """ for a given part (aka Feature) return the movie titles
