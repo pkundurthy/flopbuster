@@ -47,7 +47,7 @@ def retriveResponse(year=DEFAULT_YearDivide,is_training=True):
     budget = num.array(mysqlfuncs.results_to_list(results,index=3),dtype=float)
     SuccessMetric = misc.returnSuccessMetric(totalGross,budget)
 
-    return releaseYears,title,SuccessMetric,budget
+    return releaseYears,title,SuccessMetric,budget,totalGross
 
 def InfluenceMultiplier(partHist,titles):
     """ returns array of influence multiplier factors to scale 
@@ -104,7 +104,7 @@ class MLdataset:
 
         self.featureList = get_FeatureSet(partTypes=partTypes)
 
-        self.relYear,self.titles,self.response,self.budget = \
+        self.relYear,self.titles,self.response,self.budget, self.gross = \
             retriveResponse(year=self.yearDivide,is_training=self.is_training)
 
         lenTitles = len(self.titles)
