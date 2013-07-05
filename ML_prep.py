@@ -165,6 +165,7 @@ class feature:
                          mysqlfuncs.get_successMetric_history(self.name)
 
         # re-normalize successMetric
+        self.profitMargin = self.successMetric
         self.successMetric = ((self.successMetric*self.gross) + self.budget)/self.budget
 
         # make an array of only the years of release
@@ -193,20 +194,29 @@ class feature:
         
         self.half_life = num.float(half_life)
         profitability = []
+        pf_margin = []
         yearImpact = {}
+        yearPF = {}
         for i in range(len(self.MovieTitles)-1):
             if yearImpact.has_key(self.ReleaseYears[i]):
                 yearImpact[self.ReleaseYears[i]] += \
                      self.successMetric[i]
+                yearPF[self.ReleaseYears[i]] += \
+                     self.profitMargin[i]
             else:
                 yearImpact[self.ReleaseYears[i]] = \
                      self.successMetric[i]
+                yearPF[self.ReleaseYears[i]] = \
+                     self.profitMargin[i]
 
         yProf = num.array(yearImpact.keys())
         Prof = num.array(yearImpact.values())
+        PFM = num.array(yearPF.values())
         indxsort = yProf.argsort()
         self.yearProfit = yProf[indxsort]
         self.profit = Prof[indxsort]
+        self.PFM = PFM
+
 
     def computeImpactHistory(self,half_life=DEFAULT_halflife,currentYear=2013):
 
