@@ -43,6 +43,15 @@ def myrun_search():
     return render_template('results.html',\
              InfoSet=[search_term,GInfo,DInfo,AInfo,WInfo],gross=grossInfo)
 
+@app.after_request
+def add_header(response):
+    """
+    Add headers to both force latest IE or Chrome,
+    """
+    response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
+    response.headers['Cache-Control'] = 'public, max-age=0'
+    return response
+
 if __name__ == "__main__":
     
     if socket.gethostbyname(socket.gethostname()).startswith('172.'):

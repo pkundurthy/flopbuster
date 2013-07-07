@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %} Flopbuster: An Insight Data Science Project {% endblock %}
+{% block cache %}<meta http-equiv="Cache-control" content="no-cache" /> {% endblock %}
 {%block topbar%}
 <div class="navbar navbar-inverse navbar-fixed-top">
           <div class="navbar-inner">
@@ -53,5 +54,5 @@
  
 </div>
 {% endblock %}
-{% block script %} <script  type="text/javascript" src="static/js/barchart.js"> </script> {% endblock %}
+{% block script %} <script  type="text/javascript" src="static/js/barchart.js?foo=1234"> </script> {% endblock %}
 {% block acks %} &nbsp <p class="lead"> &nbsp Powered by data from <a href='http://www.imdb.com'> IMDB</a> and <a href='http://www.the-numbers.com'> the-numbers.com </a></p> {% endblock %}

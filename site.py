@@ -207,7 +207,7 @@ def generate_chart(outDict,movieName):
 def generate_bar_chart(Actual,Predicted,Budget):
     """ the function that generates the comparison bar chart """
 
-    outFile = open(module_path+'/site/static/js/barchart.js','w')
+    outFile = open(module_path+'site/static/js/barchart.js','w')
 
     Act_String, Pred_String, Budget_String = \
         printCashString(Actual,Predicted,Budget)
